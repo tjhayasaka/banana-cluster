@@ -11,21 +11,41 @@
 #
 # By default this script does nothing.
 
-sleep 10 # wait for eth up.  FIXME:
+# @@@@ THIS FILE WILL BE OVERWRITTEN ON CHEF BOOTSTRAP @@@@
 
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-echo ""
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-echo ""
-echo " HOGE HOGE HOGE HOGE HOGE HOGE"
-echo ""
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-echo ""
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+sleep 5 # wait for eth up.  FIXME:
 
 [ -d /root/.ssh ] || mkdir /root/.ssh
 chmod 700 /root/.ssh
 wget http://<%= @preseeder.banananet_ipaddress %>:1235/authorized_keys -O /root/.ssh/authorized_keys
 chmod 600 /root/.ssh/authorized_keys
+
+cat <<EOF
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+completed base installation.
+
+now you can bootstrap this node from your chef workstation:
+
+    knife bootstrap `hostname -f` --template-file \`pwd\`/bootstrap/debian-6.0-rvm-gem --no-host-key-verify
+
+and add roles, e.g.:
+
+    knife node run_list add `hostname -f` "role[banana_compute]"
+    knife node run_list add `hostname -f` "role[banana_cuda_4_1]"
+
+if a client already exists with a same name, error will be raised on bootstrap:
+
+    INFO: HTTP Request Returned 409 Conflict: Client already exists
+    INFO: HTTP Request Returned 403 Forbidden: You are not allowed to take this action.
+
+make sure no other running node has a same name, then remove old entry:
+
+    knife client remove banana002.pfsl.mech.tohoku.ac.jp
+
+and run bootstrap again.
+
+EOF
 
 exit 0
