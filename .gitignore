@@ -1,3 +1,6 @@
 .rake_test_cache
 private
+.nfs*
+.stgit-edit.txt
+*~
 metadata.json
