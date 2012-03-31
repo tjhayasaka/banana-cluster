@@ -1,0 +1,31 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+sleep 10 # wait for eth up.  FIXME:
+
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo ""
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo ""
+echo " HOGE HOGE HOGE HOGE HOGE HOGE"
+echo ""
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo ""
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+[ -d /root/.ssh ] || mkdir /root/.ssh
+chmod 700 /root/.ssh
+wget http://<%= @preseeder.banananet_ipaddress %>:1235/authorized_keys -O /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+
+exit 0

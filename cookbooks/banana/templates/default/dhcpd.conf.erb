@@ -2,19 +2,22 @@
 ###
 ###
 
+allow booting;
+allow bootp;
 ddns-update-style none;
 option domain-name "pfsl.mech.tohoku.ac.jp";
+option domain-search "pfsl.mech.tohoku.ac.jp";
 option domain-name-servers 10.8.11.2;
 default-lease-time 600;
 max-lease-time 7200;
 log-facility local7;
+use-host-decl-names on;
 
 subnet 10.90.0.0 netmask 255.255.0.0 {
   authoritative;
 
   option broadcast-address 10.90.255.255;
   option routers <%= @routers.map(&:banananet_ipaddress).join(", ") %>;
-  authoritative;
 
   group {
     filename "pxelinux.0";
@@ -23,105 +26,6 @@ subnet 10.90.0.0 netmask 255.255.0.0 {
     next-server <%= tftp_server.banananet_ipaddress %>;
     <% end %>
 
-    # host banana000 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.0; }
-    host banana001 { hardware ethernet 78:2b:cb:4c:39:59; fixed-address 10.90.0.1; }
-    # host banana002 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.2; }
-    # host banana003 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.3; }
-    # host banana004 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.4; }
-    # host banana005 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.5; }
-    # host banana006 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.6; }
-    # host banana007 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.7; }
-    # host banana008 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.8; }
-    # host banana009 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.9; }
-    # host banana010 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.10; }
-    # host banana011 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.11; }
-    # host banana012 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.12; }
-    # host banana013 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.13; }
-    # host banana014 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.14; }
-    # host banana015 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.15; }
-    # host banana016 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.16; }
-    # host banana017 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.17; }
-    # host banana018 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.18; }
-    # host banana019 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.19; }
-    # host banana020 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.20; }
-    # host banana021 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.21; }
-    # host banana022 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.22; }
-    # host banana023 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.23; }
-    # host banana024 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.24; }
-    # host banana025 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.25; }
-    # host banana026 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.26; }
-    # host banana027 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.27; }
-    # host banana028 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.28; }
-    # host banana029 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.29; }
-    # host banana030 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.30; }
-    # host banana031 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.31; }
-    # host banana032 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.32; }
-    # host banana033 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.33; }
-    # host banana034 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.34; }
-    # host banana035 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.35; }
-    # host banana036 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.36; }
-    # host banana037 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.37; }
-    # host banana038 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.38; }
-    # host banana039 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.39; }
-    # host banana040 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.40; }
-    # host banana041 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.41; }
-    # host banana042 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.42; }
-    # host banana043 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.43; }
-    # host banana044 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.44; }
-    # host banana045 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.45; }
-    # host banana046 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.46; }
-    # host banana047 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.47; }
-    # host banana048 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.48; }
-    # host banana049 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.49; }
-    # host banana050 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.50; }
-    # host banana051 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.51; }
-    # host banana052 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.52; }
-    # host banana053 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.53; }
-    # host banana054 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.54; }
-    # host banana055 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.55; }
-    # host banana056 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.56; }
-    # host banana057 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.57; }
-    # host banana058 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.58; }
-    # host banana059 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.59; }
-    # host banana060 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.60; }
-    # host banana061 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.61; }
-    # host banana062 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.62; }
-    # host banana063 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.63; }
-    # host banana064 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.64; }
-    # host banana065 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.65; }
-    # host banana066 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.66; }
-    # host banana067 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.67; }
-    # host banana068 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.68; }
-    # host banana069 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.69; }
-    # host banana070 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.70; }
-    # host banana071 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.71; }
-    # host banana072 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.72; }
-    # host banana073 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.73; }
-    # host banana074 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.74; }
-    # host banana075 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.75; }
-    # host banana076 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.76; }
-    # host banana077 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.77; }
-    # host banana078 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.78; }
-    # host banana079 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.79; }
-    # host banana080 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.80; }
-    # host banana081 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.81; }
-    # host banana082 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.82; }
-    # host banana083 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.83; }
-    # host banana084 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.84; }
-    # host banana085 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.85; }
-    # host banana086 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.86; }
-    # host banana087 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.87; }
-    # host banana088 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.88; }
-    # host banana089 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.89; }
-    # host banana090 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.90; }
-    # host banana091 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.91; }
-    # host banana092 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.92; }
-    # host banana093 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.93; }
-    # host banana094 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.94; }
-    # host banana095 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.95; }
-    # host banana096 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.96; }
-    # host banana097 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.97; }
-    # host banana098 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.98; }
-    # host banana099 { hardware ethernet 00:00:00:00:00:00; fixed-address 10.90.0.99; }
+    host banana002 { hardware ethernet 78:2b:cb:4c:39:59; fixed-address 10.90.0.2; }
   }
 }
