@@ -13,7 +13,13 @@
 
 # @@@@ THIS FILE WILL BE OVERWRITTEN ON CHEF BOOTSTRAP @@@@
 
-sleep 5 # wait for eth up.  FIXME:
+echo "waiting for eth up..." 1>&2
+while true; do
+  ping -W1 -c1 <%= @preseeder.banananet_ipaddress %> >/dev/null 2>&1 && break
+  echo -n "." 1>&2
+  sleep 2
+done
+echo "done." 1>&2
 
 [ -d /root/.ssh ] || mkdir /root/.ssh
 chmod 700 /root/.ssh
@@ -23,29 +29,23 @@ chmod 600 /root/.ssh/authorized_keys
 cat <<EOF
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Completed base installation.
 
-completed base installation.
+Now you can bootstrap this node from your chef workstation:
 
-now you can bootstrap this node from your chef workstation:
+ knife bootstrap `hostname -f` --template-file \\
+                \`pwd\`/bootstrap/debian-6.0-rvm-gem
 
-    knife bootstrap `hostname -f` --template-file \`pwd\`/bootstrap/debian-6.0-rvm-gem --no-host-key-verify
+If a client already exists with a same name, error will be raised on bootstrap:
 
-and add roles, e.g.:
+ HTTP Request Returned 409 Conflict: Client already exists
+ HTTP Request Returned 403 Forbidden: You are not allowed to take this action.
 
-    knife node run_list add `hostname -f` "role[banana_compute]"
-    knife node run_list add `hostname -f` "role[banana_cuda_4_1]"
+Make sure no other running client has a same name, then remove old entry:
 
-if a client already exists with a same name, error will be raised on bootstrap:
-
-    INFO: HTTP Request Returned 409 Conflict: Client already exists
-    INFO: HTTP Request Returned 403 Forbidden: You are not allowed to take this action.
-
-make sure no other running node has a same name, then remove old entry:
-
-    knife client remove banana002.pfsl.mech.tohoku.ac.jp
+ knife client remove banana002.pfsl.mech.tohoku.ac.jp
 
 and run bootstrap again.
-
 EOF
 
 exit 0
