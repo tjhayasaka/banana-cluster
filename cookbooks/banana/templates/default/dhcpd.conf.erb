@@ -27,5 +27,8 @@ subnet 10.90.0.0 netmask 255.255.0.0 {
     <% end %>
 
     host banana002 { hardware ethernet 78:2b:cb:4c:39:59; fixed-address 10.90.0.2; }
+#    host banana003 { hardware ethernet 78:2b:cb:4c:97:5b; fixed-address 10.90.0.3; }
+
+    # use /root/bin/dhcp-genconf.rb to generate host declarations.
   }
 }

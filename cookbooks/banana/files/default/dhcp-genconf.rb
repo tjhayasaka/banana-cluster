@@ -37,6 +37,14 @@ def find_next_unconfigured_hostnum
 end
 
 begin
+  unless File.exist?("/tmp/dhcpd.conf.part")
+    File.open("/tmp/dhcpd.conf.part", "a") do |f|
+      f.puts "# append following lines to the host list in"
+      f.puts "# chef-repo/cookbooks/banana/templates/default/dhcpd.conf.erb"
+      f.puts ""
+    end
+  end
+
   next_hostnum = find_next_unconfigured_hostnum
 
   File.open("/var/log/syslog") do |f|
@@ -48,16 +56,19 @@ begin
         mac_address = $1
         next if configured_mac_addresses.include?(mac_address)
 
+        hostname = hostnum_to_hostname(next_hostnum)
         File.open("/tmp/dhcpd.conf.part", "a") do |f|
           f.puts <<EOS
-    host #{hostnum_to_hostname(next_hostnum)} { hardware ethernet #{mac_address}; fixed-address 10.90.0.#{next_hostnum}; }
+    host #{hostname} { hardware ethernet #{mac_address}; fixed-address 10.90.0.#{next_hostnum}; }
 EOS
         end
         File.open("/tmp/add_roles.rb.part", "a") do |f|
           f.puts <<EOS
-knife node run_list add #{hostnum_to_hostname(next_hostnum)}.pfsl.mech.tohoku.ac.jp "role[banana_compute]"
+knife node run_list add #{hostname}.pfsl.mech.tohoku.ac.jp "role[banana_compute]"
+knife node run_list add #{hostname}.pfsl.mech.tohoku.ac.jp "role[banana_cuda_4_1]"
 EOS
         end
+        $stderr.puts "@@@ wrote example configuration for #{hostname}"
 
         File.open("/tmp/next_unconfigured_hostnum", "w") { |f| f.puts next_hostnum + 1}
         next_hostnum = find_next_unconfigured_hostnum
