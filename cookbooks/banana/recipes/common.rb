@@ -56,3 +56,11 @@ ruby_block "/etc/ntp.conf" do
     res.run_action(:create)
   end
 end
+
+package "console-data"
+
+cookbook_file "/etc/rc.local" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
