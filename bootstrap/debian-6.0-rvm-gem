@@ -1,0 +1,139 @@
+<% rvm_ruby_version = "1.9.2-p180" %>
+
+bash -c '
+
+###
+### misokai specific stuff
+###
+
+# cdn.debian.net mirrors in japan (as of 20120317):
+#   10 studenno.kugi.kyoto-u.ac.jp.
+#   10 ftp.jaist.ac.jp.
+#   100 runner.oyu-net.jp.
+#   5000..9999 ftp.nara.wide.ad.jp.
+#   9999 dennou-q.geo.kyushu-u.ac.jp.
+#   9999 dwarf.topstudio.co.jp.
+
+(
+cat <<'EOP'
+deb http://cdn.debian.net/debian/ squeeze main contrib non-free
+deb http://security.debian.org/ squeeze/updates main contrib non-free
+deb http://cdn.debian.net/debian/ squeeze-updates main contrib non-free
+#deb-src http://cdn.debian.net/debian/ squeeze main contrib non-free
+#deb-src http://security.debian.org/ squeeze/updates main contrib non-free
+#deb-src http://cdn.debian.net/debian/ squeeze-updates main contrib non-free
+EOP
+) >/etc/apt/sources.list
+
+apt-get update
+apt-get --yes dist-upgrade
+
+apt-get --yes install etckeeper
+
+dpkg --purge ruby1.9.1-dev libruby1.9.1 ruby1.9.1
+rm -fr /var/lib/gems/
+rm -f /usr/bin/ruby # ; ln -s ruby1.9.1 /usr/bin/ruby
+rm -f /usr/bin/gem # ; ln -s gem1.9.1 /usr/bin/gem
+
+echo "dash    dash/sh boolean false" | debconf-set-selections
+echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
+echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8, ja_JP.UTF-8 UTF-8" | debconf-set-selections
+
+###
+###
+###
+
+apt-get install --yes build-essential bison openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev autoconf libc6-dev libtool locales
+
+if [ ! -f /usr/local/rvm/rubies/ruby-<%= rvm_ruby_version %>/bin/ruby ]; then
+  # bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
+  bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+  grep rvm_prefix /etc/rvmrc || echo export rvm_prefix=/usr/local >>/etc/rvmrc
+  . /usr/local/rvm/scripts/rvm
+  rvm install <%= rvm_ruby_version %>
+fi
+
+if grep "profile\.d" /etc/profile >/dev/null; then
+  :
+else
+  (
+  cat <<'EOP'
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r \$i ]; then
+      . \$i
+    fi
+  done
+  unset i
+fi
+EOP
+  ) >>/etc/profile
+fi
+
+(
+cat <<'EOP'
+[[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm"  # This loads RVM into a shell session.
+EOP
+) > /etc/profile.d/rvm.sh
+
+. /usr/local/rvm/scripts/rvm
+rvm use <%= rvm_ruby_version %> --default
+
+###
+### misokai specific stuff
+###
+
+cat >/usr/bin/rvm-wrapper <<'EOP'
+#!/bin/bash
+. /usr/local/rvm/scripts/rvm
+. $rvm_path/environments/default
+exec "\$@"
+EOP
+chmod 755 /usr/bin/rvm-wrapper
+
+gem install bundler --no-rdoc --no-ri
+
+rm /bin/sh; ln -s bash /bin/sh
+
+###
+###
+###
+
+if [ ! -f /usr/bin/chef-client ]; then
+  gem install ohai --no-rdoc --no-ri --verbose
+  gem install chef --no-rdoc --no-ri --verbose <%= bootstrap_version_string %>
+  (
+  cat <<'EOP'
+#!/bin/bash
+
+. /etc/profile
+/usr/local/rvm/gems/ruby-<%= rvm_ruby_version %>/bin/chef-client "$@"
+EOP
+  ) > /usr/bin/chef-client
+  chmod 755 /usr/bin/chef-client
+fi
+
+mkdir -p /etc/chef
+
+(
+cat <<'EOP'
+<%= validation_key %>
+EOP
+) > /tmp/validation.pem
+awk NF /tmp/validation.pem > /etc/chef/validation.pem
+rm /tmp/validation.pem
+
+(
+cat <<'EOP'
+<%= config_content %>
+EOP
+) > /etc/chef/client.rb
+
+(
+cat <<'EOP'
+<%= { "run_list" => @run_list }.to_json %>
+EOP
+) > /etc/chef/first-boot.json
+
+<%= start_chef %>'
