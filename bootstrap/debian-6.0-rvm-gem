@@ -1,6 +1,9 @@
 <% rvm_ruby_version = "1.9.2-p180" %>
 
-bash -c '
+bash -e -c '
+
+export http_proxy=http://130.34.255.3:3128/
+export https_proxy=$http_proxy
 
 ###
 ### misokai specific stuff
@@ -100,15 +103,17 @@ rm /bin/sh; ln -s bash /bin/sh
 ###
 ###
 
-if [ ! -f /usr/bin/chef-client ]; then
+if [ ! -f /usr/local/rvm/gems/ruby-<%= rvm_ruby_version %>/bin/chef-client ]; then
   gem install ohai --no-rdoc --no-ri --verbose
   gem install chef --no-rdoc --no-ri --verbose <%= bootstrap_version_string %>
+fi
+if [ ! -f /usr/bin/chef-client ]; then
   (
   cat <<'EOP'
 #!/bin/bash
 
 . /etc/profile
-/usr/local/rvm/gems/ruby-<%= rvm_ruby_version %>/bin/chef-client "$@"
+/usr/local/rvm/gems/ruby-<%= rvm_ruby_version %>/bin/chef-client "\$@"
 EOP
   ) > /usr/bin/chef-client
   chmod 755 /usr/bin/chef-client
