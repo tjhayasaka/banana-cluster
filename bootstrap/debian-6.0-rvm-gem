@@ -136,4 +136,7 @@ cat <<'EOP'
 EOP
 ) > /etc/chef/first-boot.json
 
+chmod 755 /etc/chef
+chmod 644 /etc/chef/validation.pem
+
 <%= start_chef %>'
