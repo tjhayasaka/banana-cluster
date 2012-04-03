@@ -8,8 +8,8 @@ ddns-update-style none;
 option domain-name "pfsl.mech.tohoku.ac.jp";
 option domain-search "pfsl.mech.tohoku.ac.jp";
 option domain-name-servers 10.8.11.2;
-default-lease-time 600;
-max-lease-time 7200;
+default-lease-time 31557600;
+max-lease-time 31557600;
 log-facility local7;
 use-host-decl-names on;
 
@@ -27,7 +27,7 @@ subnet 10.90.0.0 netmask 255.255.0.0 {
     <% end %>
 
     host banana002 { hardware ethernet 78:2b:cb:4c:39:59; fixed-address 10.90.0.2; }
-#    host banana003 { hardware ethernet 78:2b:cb:4c:97:5b; fixed-address 10.90.0.3; }
+    host banana003 { hardware ethernet 78:2b:cb:4c:97:5b; fixed-address 10.90.0.3; }
 
     # use /root/bin/dhcp-genconf.rb to generate host declarations.
   }
