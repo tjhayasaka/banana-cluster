@@ -1,0 +1,127 @@
+###
+###
+###
+
+--- ofa_kernel-1.5.4.1/ofed_scripts/ofa_kernel.spec     2012-04-03 12:13:03.000000000 +0900
++++ ofa_kernel-1.5.4.1/ofed_scripts/ofa_kernel.spec   2012-04-03 12:13:59.000000000 +0900
+@@ -364,7 +364,7 @@
+ # Bring up/down openib
+ #
+ # chkconfig: 2345 05 95
+-# description: Activates/Deactivates InfiniBand Driver to \
++# description: Activates/Deactivates InfiniBand Driver to \\
+ #              start at boot time.
+ #
+ ### BEGIN INIT INFO
+@@ -397,7 +397,7 @@
+ # Required-Stop: opensmd $openiscsi
+ # Default-Start:  2 3 5
+ # Default-Stop: 0 1 2 6
+-# Description:    Activates/Deactivates InfiniBand Driver to \
++# Description:    Activates/Deactivates InfiniBand Driver to \\
+ #                 start at boot time.
+ ### END INIT INFO
+ @;
+@@ -422,9 +422,9 @@
+ # Provides:       openibd
+ # Required-Start: $local_fs
+ # Required-Stop: opensmd $openiscsi
+-# Default-Start:  2 3 5
+-# Default-Stop: 0 1 2 6
+-# Description:    Activates/Deactivates InfiniBand Driver to \
++# Default-Start:  2 3 4 5
++# Default-Stop: 0 1 6
++# Description:    Activates/Deactivates InfiniBand Driver to \\
+ #                 start at boot time.
+ ### END INIT INFO
+ @;
+--- ofa_kernel.spec     2012-04-03 12:13:03.000000000 +0900
++++ ofa_kernel.spec   2012-04-03 12:13:59.000000000 +0900
+@@ -364,7 +364,7 @@
+ # Bring up/down openib
+ #
+ # chkconfig: 2345 05 95
+-# description: Activates/Deactivates InfiniBand Driver to \
++# description: Activates/Deactivates InfiniBand Driver to \\
+ #              start at boot time.
+ #
+ ### BEGIN INIT INFO
+@@ -397,7 +397,7 @@
+ # Required-Stop: opensmd $openiscsi
+ # Default-Start:  2 3 5
+ # Default-Stop: 0 1 2 6
+-# Description:    Activates/Deactivates InfiniBand Driver to \
++# Description:    Activates/Deactivates InfiniBand Driver to \\
+ #                 start at boot time.
+ ### END INIT INFO
+ @;
+@@ -422,9 +422,9 @@
+ # Provides:       openibd
+ # Required-Start: $local_fs
+ # Required-Stop: opensmd $openiscsi
+-# Default-Start:  2 3 5
+-# Default-Stop: 0 1 2 6
+-# Description:    Activates/Deactivates InfiniBand Driver to \
++# Default-Start:  2 3 4 5
++# Default-Stop: 0 1 6
++# Description:    Activates/Deactivates InfiniBand Driver to \\
+ #                 start at boot time.
+ ### END INIT INFO
+ @;
+
+###
+###
+###
+
+--- ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/err.h.dist	2012-04-02 16:20:17.000000000 +0900
++++ ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/err.h	2012-04-02 16:20:25.000000000 +0900
+@@ -5,9 +5,11 @@
+ 
+ #define IS_ERR_VALUE(x) unlikely((x) >= (unsigned long)-MAX_ERRNO)
+ 
++#if 0
+ static inline long __must_check IS_ERR_OR_NULL(const void *ptr)
+ {
+        return !ptr || IS_ERR_VALUE((unsigned long)ptr);
+ }
++#endif
+ 
+ #endif /* __ERR__BACKPORT_H_TO_2_6_32___ */
+--- ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/netdevice.h.dist	2012-04-02 16:22:30.000000000 +0900
++++ ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/netdevice.h	2012-04-02 16:26:29.000000000 +0900
+@@ -40,6 +40,7 @@
+ #define netdev_for_each_mc_addr(mclist, dev) \
+     for (mclist = dev->mc_list; mclist; mclist = mclist->next)
+ 
++#if 0
+ static inline const char *netdev_name(const struct net_device *dev)
+ {
+     if (dev->reg_state != NETREG_REGISTERED)
+@@ -60,5 +61,6 @@
+ 
+ #define netdev_info(netdev, format, arg...)             \
+     netdev_printk(KERN_INFO, netdev, format, ## arg)
++#endif
+ 
+ #endif /* __NETDEVICE__BACKPORT_H_TO_2_6_32___ */
+--- ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/pci.h.dist	2012-04-02 17:38:23.000000000 +0900
++++ ofa_kernel-1.5.4.1/kernel_addons/backport/2.6.32/include/linux/pci.h	2012-04-02 17:41:55.000000000 +0900
+@@ -17,6 +17,7 @@
+ #define PCI_VPD_SRDT_TAG_SIZE           1
+ 
+ 
++#if 0
+ static inline u16 pci_vpd_lrdt_size(const u8 *lrdt)
+ {
+ 	return (u16)lrdt[1] + ((u16)lrdt[2] << 8);
+@@ -94,5 +95,6 @@
+ 
+ 	return -ENOENT;
+ }
++#endif
+ 
+ #endif /* __PCI__BACKPORT_H_TO_2_6_32___ */
+
+###
+###
+###
