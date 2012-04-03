@@ -104,7 +104,7 @@
 -    fi
 +for PORT in $PORTS ; do
 +    echo -n "Starting opensm on $PORT: "
-+    start-stop-daemon --start --quiet --make-pidfile  --pidfile /var/run/opensm-$PORT --background --exec /usr/sbin/opensm -- -g $PORT -f /var/log/opensm.$PORT.log
++    start-stop-daemon --start --oknodo --quiet --make-pidfile  --pidfile /var/run/opensm-$PORT --background --exec /usr/sbin/opensm -- -g $PORT -f /var/log/opensm.$PORT.log
 +    RETVAL=$?
      echo
 +done
@@ -144,7 +144,7 @@
 +fi
 +for PORT in $PORTS ; do
 +    echo -n "Shutting down opensm on $PORT: "
-+    start-stop-daemon --stop --pidfile /var/run/opensm-$PORT 
++    start-stop-daemon --stop --oknodo --pidfile /var/run/opensm-$PORT 
 +    RETVAL=$?
 +    echo
 +done
@@ -306,7 +306,7 @@
 -    fi
 +for PORT in $PORTS ; do
 +    echo -n "Starting opensm on $PORT: "
-+    start-stop-daemon --start --quiet --make-pidfile  --pidfile /var/run/opensm-$PORT --background --exec /usr/sbin/opensm -- -g $PORT -f /var/log/opensm.$PORT.log
++    start-stop-daemon --start --oknodo --quiet --make-pidfile  --pidfile /var/run/opensm-$PORT --background --exec /usr/sbin/opensm -- -g $PORT -f /var/log/opensm.$PORT.log
 +    RETVAL=$?
      echo
 +done
@@ -346,7 +346,7 @@
 +fi
 +for PORT in $PORTS ; do
 +    echo -n "Shutting down opensm on $PORT: "
-+    start-stop-daemon --stop --pidfile /var/run/opensm-$PORT 
++    start-stop-daemon --stop --oknodo --pidfile /var/run/opensm-$PORT 
 +    RETVAL=$?
 +    echo
 +done
