@@ -78,7 +78,7 @@ execute "install_ofed" do
   not_if ("test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-ofa_kernel && " +
           "test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-infinipath-psm && " +
           "test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-install_pl")
-  command "cd /root/stamps/OFED-1.5.4.1 && ./install.pl -c /root/stamps/OFED-1.5.4.1-ofed.conf && update-rc.d opensmd defaults && test /root/stamps/OFED-1.5.4.1.tgz-installed"
+  command "cd /root/stamps/OFED-1.5.4.1 && ./install.pl -c /root/stamps/OFED-1.5.4.1-ofed.conf && update-rc.d opensmd defaults && touch /root/stamps/OFED-1.5.4.1.tgz-installed"
 end
 
 file "/etc/opensm/partitions.conf" do
