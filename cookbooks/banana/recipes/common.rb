@@ -64,3 +64,37 @@ cookbook_file "/etc/rc.local" do
   group "root"
   mode "0755"
 end
+
+for dirname in %w(/w0 /w1 /w2 /w3)
+  directory "#{dirname}" do
+    owner "root"
+    group "root"
+    mode "0755"
+  end
+end
+
+###
+
+package "nfs-client"
+
+ruby_block "/etc/fstab" do
+  block do
+    lines = File.readlines(name).reject { |s| s =~ /^[^ ]* +\/(w0|w1|w2|w3) / }
+    lines += [<<EOS]
+10.8.91.1:/w0 /w0 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.8.91.1:/w1 /w1 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.8.91.1:/w2 /w2 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.8.91.1:/w3 /w3 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+EOS
+    res = Chef::Resource::File.new(name, Chef::RunContext.new(node, {}))
+    res.owner "root"
+    res.group "root"
+    res.mode "0644"
+    res.content lines.join
+    res.run_action(:create)
+  end
+end
+
+execute "mount_nfs" do
+  command "mount -vat nfs"
+end
