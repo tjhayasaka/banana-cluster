@@ -73,6 +73,21 @@ for dirname in %w(/w0 /w1 /w2 /w3)
   end
 end
 
+execute "preseed_config" do
+  ldap_server = search(:node, "role:banana_ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
+  command <<EOS
+debconf-set-selections <<EOF
+nslcd nslcd/ldap-uris string ldap://#{ldap_server}/
+nslcd nslcd/ldap-base string dc=local
+libnss-ldapd libnss-ldapd/nsswitch multiselect group, passwd, shadow
+EOF
+EOS
+end
+
+package "libnss-ldapd"
+package "libpam-ldapd"
+package "ldap-utils" # not mandatory but for convenience
+
 ###
 
 package "nfs-client"

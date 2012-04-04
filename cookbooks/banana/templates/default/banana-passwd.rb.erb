@@ -1,0 +1,178 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require "rubygems"
+require "active_ldap"
+
+class Ou < ActiveLdap::Base
+  ldap_mapping :prefix => "", :dn_attribute => "ou", :classes => ['organizationalUnit'], :scope => :one
+end
+
+class Group < ActiveLdap::Base
+  ldap_mapping :prefix => "ou=Groups", :dn_attribute => "cn", :classes => ["posixGroup"], :scope => :one
+  has_many :primary_users, :primary_key => "gidNumber", :class_name => "User", :foreign_key => "gidNumber"
+  has_many :users, :wrap => "memberUid", :class_name => "User", :primary_key => "uid"
+end
+
+class User < ActiveLdap::Base
+  ldap_mapping :prefix => "ou=Users", :dn_attribute=> "uid", :classes => ["account", "posixAccount"], :scope => :one
+  belongs_to :groups, :primary_key => "uid", :class_name => "Group", :many => "memberUid"
+  belongs_to :primary_group, :foreign_key => "gidNumber", :class_name => "Group", :primary_key => "gidNumber"
+end
+
+def usage_exit(stream, code)
+  stream.puts <<EOS
+
+usage: #{$0} [--dry-run|-n] passwd-filename
+
+#{File.basename $0} updates the LDAP directory of banana cluster
+according to the passwd file specified by the command line argument.
+
+  - create "Users" ou and "Groups" ou.
+
+  - create "pfsl" group (2222) in "Groups".
+
+  - create new users in "Users".  the initial password for the users
+    are always "banana".
+
+  - update existing users.  passwords are not touched.
+
+  - create new groups in "Groups".  gid must be either 2222 or same as
+    uid.
+
+  - update groups users.  same restrictions apply as above.
+
+  - delete unexpected (which means does not exist in passwd) users.
+
+  - delete unexpected (which means does not exist in passwd) groups.
+
+EOS
+  exit(code)
+end
+
+begin
+  options = {
+    :dry_run => false,
+    :create_ous => true,
+    :delete_entries => true
+  }
+
+  passwd_filename = nil
+
+  while !$ARGV.empty?
+    case $ARGV.shift
+    when "--help", "-h"
+      usage_exit($stdout, 0)
+    when "--dry-run", "-n"
+      options[:dry_run] = true
+    when /.*/
+      passwd_filename = $~[0]
+      break
+    end
+  end
+
+  usage_exit($stderr, 1) unless passwd_filename
+  usage_exit($stderr, 1) unless $ARGV.empty?
+
+  ActiveLdap::Base.setup_connection(:host => "<%= @ldap_server %>",
+                                    :base => "dc=local",
+                                    :bind_dn => "cn=admin,dc=local",
+                                    :password_block => Proc.new { "banana" })
+
+  if options[:create_ous] && !Ou.exist?("Users")
+    $stderr.puts "creating Users ou"
+    Ou.new("Users").save! unless options[:dry_run]
+  end
+  raise "couldn't find #{Ou.new("Users").dn.to_s}" unless options[:dry_run] || Ou.exist?("Users")
+
+  if options[:create_ous] && !Ou.exist?("Groups")
+    $stderr.puts "creating Groups ou"
+    Ou.new("Groups").save! unless options[:dry_run]
+  end
+  raise "couldn't find #{Ou.new("Groups").dn.to_s}" unless options[:dry_run] || Ou.exist?("Groups")
+
+  unless Group.exist?("pfsl")
+    $stderr.puts "creating pfsl group"
+    pfsl_group = Group.new(:cn => "pfsl", :gidNumber => 2222)
+    pfsl_group.save! unless options[:dry_run]
+  end
+
+  passwd = File.read(passwd_filename)
+
+  users_expected = passwd.lines.map do |line|
+    keys = [:uid, :user_password, :uid_number, :gid_number, :gecos, :home_directory, :login_shell]
+    values = line.strip.split(":")
+    attrs = Hash[*(keys.zip(values).flatten)]
+    attrs.delete(:user_password)
+    attrs.merge(:cn => attrs[:uid])
+  end
+
+  users_expected.each do |user_expected|
+
+    # create/update user
+
+    user = User.find(:first, user_expected[:uid])
+    unless user
+      uid_number = user_expected[:uid_number]
+      gid_number = user_expected[:gid_number]
+      raise "gid_number restriction violation: uid = #{user_expected[:user]}, uid_number = #{uid_number}, gid_number = #{gid_number}" if uid_number != gid_number && gid_number != "2222"
+
+      $stderr.puts "creating user '#{user_expected[:uid]}'"
+      user = User.new(user_expected.merge(:user_password => "banana"))
+      user.save! unless options[:dry_run]
+    end
+    needs_update = false
+    user_expected.each do |key, val|
+      if val.to_s != user[key].to_s
+        $stderr.puts "user: change detected: #{user_expected[:uid]}.#{key}"
+        $stderr.puts "  old: #{user[key]}"
+        $stderr.puts "  new: #{val}"
+        needs_update = true
+      end
+    end
+    if needs_update
+      $stderr.puts "updating user '#{user_expected[:uid]}'"
+      user.update_attributes!(user_expected) unless options[:dry_run]
+    end
+
+    # create/update group
+
+    group = Group.find(:first, :filter => ["gidNumber", user.gid_number])
+    unless group
+      $stderr.puts "creating group '#{user.cn}'"
+      group = Group.new(:cn => user.cn, :gid_number => user.gid_number)
+      group.save! unless options[:dry_run]
+    end
+    if user.cn != group.cn && group.gid_number != 2222
+      $stderr.puts "group: change detected: #{user.gid_number}"
+      $stderr.puts "  old: #{group.cn}"
+      $stderr.puts "  new: #{user.cn}"
+      $stderr.puts "updating group '#{user.gid_number}'"
+      # group.update_attributes!(:cn => user.cn) unless options[:dry_run] # won't work for some reason.  use destroy & create method:
+      new_group = Group.new(:cn => user.cn, :gid_number => user.gid_number)
+      new_group.save! unless options[:dry_run]
+      group.destroy unless options[:dry_run]
+      group = new_group
+    end
+  end
+
+  if options[:delete_entries]
+
+    # delete unexpected users
+
+    User.all.each do |user|
+      next if users_expected.find { |u| u[:cn] == user.cn }
+      $stderr.puts "deleting user #{user.cn}"
+      user.destroy unless options[:dry_run]
+    end
+
+    # delete unexpected groups
+
+    Group.all.each do |group|
+      next if group.gid_number == 2222
+      next if User.find(:first, :filter => ["gidNumber", group.gid_number])
+      $stderr.puts "deleting group #{group.cn}"
+      group.destroy unless options[:dry_run]
+    end
+  end
+end
