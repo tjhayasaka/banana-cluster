@@ -96,3 +96,30 @@ end
 service "opensmd" do
   action :start
 end
+
+directory "/var/mpi-selector" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
+directory "/var/mpi-selector/data" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
+%w(mvapich2_gcc-1.7 mvapich_gcc-1.2.0 openmpi_gcc-1.4.3).each do |mpi_impl|
+  cookbook_file "/var/mpi-selector/data/#{mpi_impl}.sh" do
+    source "OFED-1.5.4.1-#{mpi_impl}.sh"
+    owner "root"
+    group "root"
+    mode "0644"
+  end
+  cookbook_file "/var/mpi-selector/data/#{mpi_impl}.csh" do
+    source "OFED-1.5.4.1-#{mpi_impl}.csh"
+    owner "root"
+    group "root"
+    mode "0644"
+  end
+end
