@@ -15,8 +15,9 @@ cookbook_file "/root/stamps/OFED-1.5.4.1-patch-opensm"
 cookbook_file "/root/stamps/OFED-1.5.4.1-ofed.conf"
 
 execute "extract_ofed" do
-  not_if "test /root/stamps/OFED-1.5.4.1.tgz-extracted -nt /root/stamps/OFED-1.5.4.1.tgz"
-  command "cd /root/stamps/ && rm -fr OFED-1.5.4.1 && tar zxpf OFED-1.5.4.1.tgz && touch /root/stamps/OFED-1.5.4.1.tgz-extracted"
+  depends "OFED-1.5.4.1.tgz"
+  stamps "OFED-1.5.4.1.tgz-extracted"
+  command "cd /root/stamps/ && rm -fr OFED-1.5.4.1 && tar zxpf OFED-1.5.4.1.tgz"
 end
 
 directory "/root/stamps/OFED-1.5.4.1/SRPMS-dist"
@@ -31,8 +32,9 @@ def patch_srpm(srpm, tgz, rpms)
   package = srpm.sub(/-[0-9].*/, "")
   tmpextract = tgz.sub(/\.(tgz|tar.gz)/, "")
   execute "patch_ofed-#{package}" do
-    not_if("test /root/stamps/OFED-1.5.4.1.tgz-patched-#{package} -nt /root/stamps/OFED-1.5.4.1.tgz-extracted && " +
-           "test /root/stamps/OFED-1.5.4.1.tgz-patched-#{package} -nt /root/stamps/OFED-1.5.4.1-patch-#{package}")
+    depends "OFED-1.5.4.1.tgz-extracted"
+    depends "OFED-1.5.4.1-patch-#{package}"
+    stamps "OFED-1.5.4.1.tgz-patched-#{package}"
     tmpdir = "/tmp/banana-ofed_1_5_4_1-patch-$$"
     command "mkdir -v #{tmpdir} && cd #{tmpdir} && " + <<EOS
 : && # extract the trees
@@ -52,8 +54,7 @@ def patch_srpm(srpm, tgz, rpms)
     mv /root/rpmbuild/SRPMS/#{srpm} /root/stamps/OFED-1.5.4.1/SRPMS-patched/ &&
     cp -pv /root/stamps/OFED-1.5.4.1/SRPMS-patched/#{srpm} /root/stamps/OFED-1.5.4.1/SRPMS/ &&
 : &&
-    rm -f #{rpms.map { |s| s.sub(/^/, "/root/stamps/OFED-1.5.4.1/RPMS/debian/x86_64/") }.join(" ")} &&
-    touch /root/stamps/OFED-1.5.4.1.tgz-patched-#{package}
+    rm -f #{rpms.map { |s| s.sub(/^/, "/root/stamps/OFED-1.5.4.1/RPMS/debian/x86_64/") }.join(" ")}
 EOS
   end
 end
@@ -63,22 +64,23 @@ patch_srpm "infinipath-psm-2.9-926.1005_open.src.rpm", "infinipath-psm-2.9-926.1
 patch_srpm "opensm-3.3.13-1.src.rpm", "opensm-3.3.13.tar.gz", ["opensm-*"]
 
 execute "patch_install_pl" do
-  not_if "test /root/stamps/OFED-1.5.4.1.tgz-patched-install_pl -nt /root/stamps/OFED-1.5.4.1.tgz-extracted"
+  depends "OFED-1.5.4.1.tgz-extracted"
+  stamps "OFED-1.5.4.1.tgz-patched-install_pl"
   tmpdir = "/tmp/banana-ofed_1_5_4_1-patch-$$"
   command "mkdir -v #{tmpdir} && cd #{tmpdir} && " + <<'EOS'
 : && # patch install.pl
     sed -e 's:\(2\\.6\\.(27.*el6\)/:\1|2\\.6\\.32-5-amd64/:' /root/stamps/OFED-1.5.4.1/install.pl >/root/stamps/OFED-1.5.4.1/install.pl.new && # NOTE: this patch is idempotent
     mv /root/stamps/OFED-1.5.4.1/install.pl.new /root/stamps/OFED-1.5.4.1/install.pl &&
-    chmod 755 /root/stamps/OFED-1.5.4.1/install.pl &&
-    touch /root/stamps/OFED-1.5.4.1.tgz-patched-install_pl
+    chmod 755 /root/stamps/OFED-1.5.4.1/install.pl
 EOS
 end
 
 execute "install_ofed" do
-  not_if ("test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-ofa_kernel && " +
-          "test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-infinipath-psm && " +
-          "test /root/stamps/OFED-1.5.4.1.tgz-installed -nt /root/stamps/OFED-1.5.4.1.tgz-patched-install_pl")
-  command "cd /root/stamps/OFED-1.5.4.1 && ./install.pl -c /root/stamps/OFED-1.5.4.1-ofed.conf && update-rc.d opensmd defaults && touch /root/stamps/OFED-1.5.4.1.tgz-installed"
+  depends "OFED-1.5.4.1.tgz-patched-ofa_kernel"
+  depends "OFED-1.5.4.1.tgz-patched-infinipath-psm"
+  depends "OFED-1.5.4.1.tgz-patched-install_pl"
+  stamps "OFED-1.5.4.1.tgz-installed"
+  command "cd /root/stamps/OFED-1.5.4.1 && ./install.pl -c /root/stamps/OFED-1.5.4.1-ofed.conf && update-rc.d opensmd defaults"
 end
 
 file "/etc/opensm/partitions.conf" do

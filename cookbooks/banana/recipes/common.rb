@@ -2,6 +2,84 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+
+# time stamping stuff
+
+directory "/root/stamps"
+
+# excerpt from activesupport-3.0.11
+class ::Module
+  def alias_method_chain(target, feature)
+    # Strip out punctuation on predicates or bang methods since
+    # e.g. target?_without_feature is not a valid method name.
+    aliased_target, punctuation = target.to_s.sub(/([?!=])$/, ''), $1
+    yield(aliased_target, punctuation) if block_given?
+
+    with_method, without_method = "#{aliased_target}_with_#{feature}#{punctuation}", "#{aliased_target}_without_#{feature}#{punctuation}"
+
+    alias_method without_method, target
+    alias_method target, with_method
+
+    case
+      when public_method_defined?(without_method)
+        public target
+      when protected_method_defined?(without_method)
+        protected target
+      when private_method_defined?(without_method)
+        private target
+    end
+  end
+end
+
+class TimeStamp
+  attr_reader :stamp_filename
+
+  def initialize(stamp_filename)
+    @stamp_filename = stamp_filename
+  end
+
+  def put_stamp
+    Chef::Log.info("Touching #{@stamp_filename}")
+    system("/bin/touch #{@stamp_filename}")
+  end
+end
+
+class ::Chef
+  class Resource
+    attr_reader :time_stamp
+
+    def canonical_stamp_name(filename)
+      (filename[0] == "/") ? filename : "/root/stamps/#{filename}"
+    end
+
+    def depends(*filenames)
+      @stamp_depends ||= []
+      @stamp_depends += filenames.map { |n| canonical_stamp_name(n) }
+    end
+
+    def stamps(filename)
+      raise "you can not define multiple time stamps for a resource" if @time_stamp
+      raise "order matters!  'depends' must be came earlier than 'stamps'" if depends.nil? || depends.empty?
+      stamp_filename = canonical_stamp_name(filename)
+      @time_stamp = TimeStamp.new(stamp_filename)
+      tests = @stamp_depends.map { |dep| "test #{stamp_filename} -nt #{dep}" }
+      not_if(tests.join(" && "))
+      Chef::Log.debug("depends: #{stamp_filename} => #{@stamp_depends}")
+      Chef::Log.debug("tests: = #{tests.inspect}")
+    end
+  end
+
+  class Runner
+    def run_action_with_stamping(resource, action)
+      run_action_without_stamping(resource, action)
+      resource.time_stamp.put_stamp if resource.updated_by_last_action? && resource.time_stamp
+    end
+
+    alias_method_chain :run_action, :stamping
+  end
+end
+
+
 class ::Chef
   class Node
     def banananet_ipaddress
@@ -10,8 +88,6 @@ class ::Chef
     end
   end
 end
-
-directory "/root/stamps"
 
 package "ntpdate"
 
