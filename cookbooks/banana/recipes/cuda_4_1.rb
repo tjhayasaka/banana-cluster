@@ -31,7 +31,7 @@ execute "install_sdk" do
   command "rm -fr /usr/NVIDIA_GPU_Computing_SDK && /w2/hayasaka/files/non-free/gpucomputingsdk_4.1.28_linux.run -- --prefix=/usr/NVIDIA_GPU_Computing_SDK --cudaprefix=/usr/local/cuda"
 end
 
-file "/etc/ld.so.conf.d/cuda" do
+file "/etc/ld.so.conf.d/cuda.conf" do
   owner "root"
   group "root"
   mode "0644"
