@@ -40,6 +40,10 @@ class TimeStamp
 
   def put_stamp
     Chef::Log.info("Touching #{@stamp_filename}")
+    # NOTE:  the timestamp resolution of ext3 is a second.  so we
+    # ensure the stamp is at least 1 second later from previous one,
+    # otherwise same rules may be executed on next chef-client run.
+    sleep(1.1) # FIXME:  this is just a workaround
     system("/bin/touch #{@stamp_filename}")
   end
 end
