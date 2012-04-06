@@ -14,6 +14,12 @@ cookbook_file "/root/stamps/OFED-1.5.4.1-patch-infinipath-psm"
 cookbook_file "/root/stamps/OFED-1.5.4.1-patch-opensm"
 cookbook_file "/root/stamps/OFED-1.5.4.1-ofed.conf"
 
+# NOTE:
+#
+#   QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43.tgz is not included in git
+#   repo.  It must be downloaded separately and placed at
+#   /w2/hayasaka/files/non-free.
+
 execute "extract_ofed" do
   depends "OFED-1.5.4.1.tgz"
   stamps "OFED-1.5.4.1.tgz-extracted"
@@ -89,6 +95,33 @@ file "/etc/opensm/partitions.conf" do
   mode "0644"
 end
 
+execute "install_iba_portconfig" do
+  depends "/w2/hayasaka/files/non-free/QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43.tgz"
+  stamps "iba_portconfig-installed"
+  command "cd /root/stamps && tar zxf /w2/hayasaka/files/non-free/QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43.tgz QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43/QLogic-Tools.RHEL5-x86_64.7.0.1.0.36/bin/iba_portconfig && mv -v QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43/QLogic-Tools.RHEL5-x86_64.7.0.1.0.36/bin/iba_portconfig /usr/sbin/"
+end
+
+file "/etc/default/opensm" do
+  owner "root"
+  group "root"
+  mode "0644"
+  content <<EOS
+#
+
+sleep 5 # to wait ib if up
+EOS
+end
+
+file "/etc/rc.local.d/99_qib_portconfig" do
+  owner "root"
+  group "root"
+  mode "0755"
+  content <<EOS
+#!/bin/sh
+exec /usr/sbin/iba_portconfig -s 4
+EOS
+end
+
 service "openibd" do
   action :start
 end
@@ -96,6 +129,8 @@ end
 service "opensmd" do
   action :start
 end
+
+execute "/etc/rc.local.d/99_qib_portconfig"
 
 directory "/var/mpi-selector" do
   owner "root"
