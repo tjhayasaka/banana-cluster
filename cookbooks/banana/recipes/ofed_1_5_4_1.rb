@@ -158,3 +158,7 @@ end
     mode "0644"
   end
 end
+
+execute "select_default_mpi_impl" do
+  command "mpi-selector --system --set openmpi_gcc-1.4.3"
+end
