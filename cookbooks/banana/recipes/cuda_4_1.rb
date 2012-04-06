@@ -52,3 +52,19 @@ execute "compile_sdk" do
   stamps "gpucomputingsdk_4.1.28_linux.run-compiled"
   command "cd /usr/NVIDIA_GPU_Computing_SDK && make clean && make -j6 all"
 end
+
+file "/etc/rc.local.d/99_cuda" do
+  owner "root"
+  group "root"
+  mode "0755"
+  content <<EOS
+#!/bin/sh
+
+# populate /dev/nvidia*
+
+cd /tmp || exit 1
+exec /usr/NVIDIA_GPU_Computing_SDK/C/bin/linux/release/deviceQuery --noprompt >/dev/null
+EOS
+end
+
+execute "/etc/rc.local.d/99_cuda"
