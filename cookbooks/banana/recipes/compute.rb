@@ -7,3 +7,5 @@ cookbook_file "/etc/security/limits.d/no-ulimit.conf" do
   group "root"
   mode "0644"
 end
+
+package "libboost-all-dev"
