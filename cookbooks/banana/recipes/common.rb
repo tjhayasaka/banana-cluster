@@ -135,6 +135,12 @@ end
 
 package "console-data"
 
+directory "/etc/rc.local.d" do
+  owner "root"
+  group "root"
+  mode "0755"
+end
+
 cookbook_file "/etc/rc.local" do
   owner "root"
   group "root"

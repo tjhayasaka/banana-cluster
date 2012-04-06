@@ -14,4 +14,4 @@
 setterm -blength 0 -powersave off -blank 0
 loadkeys emacs2
 
-exit 0
+run-parts --exit-on-error -- /etc/rc.local.d
