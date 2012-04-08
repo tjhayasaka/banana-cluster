@@ -7,8 +7,8 @@ service "isc-dhcp-server"
 
 template "/etc/dhcp/dhcpd.conf" do
   routers = search(:node, "role:banana_router AND chef_environment:#{node.chef_environment}")
-  tftp_servers = search(:node, "role:banana_tftp_server AND chef_environment:#{node.chef_environment}")
-  preseeder = search(:node, "role:banana_debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  tftp_servers = search(:node, "recipes:banana\\:\\:tftp_server AND chef_environment:#{node.chef_environment}")
+  preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
   owner "root"
   group "root"
   mode "0644"

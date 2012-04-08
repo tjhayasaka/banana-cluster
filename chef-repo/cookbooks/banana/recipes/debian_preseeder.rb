@@ -20,7 +20,7 @@ directory "/home/www-data/banana-debian-preseed/" do
 end
 
 template "/home/www-data/banana-debian-preseed/preseed.txt" do
-  preseeder = search(:node, "role:banana_debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
   source "apache2-debian_preseed.txt.erb"
   owner "root"
   group "root"
@@ -29,7 +29,7 @@ template "/home/www-data/banana-debian-preseed/preseed.txt" do
 end
 
 template "/home/www-data/banana-debian-preseed/rc.local-compute-bootstrap" do
-  preseeder = search(:node, "role:banana_debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
   source "apache2-debian_rc.local-compute-bootstrap.erb"
   owner "root"
   group "root"

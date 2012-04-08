@@ -160,7 +160,7 @@ for dirname in %w(/w0 /w1 /w2 /w3)
 end
 
 execute "preseed_config" do
-  ldap_server = search(:node, "role:banana_ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
+  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
   command <<EOS
 debconf-set-selections <<EOF
 nslcd nslcd/ldap-uris string ldap://#{ldap_server}/

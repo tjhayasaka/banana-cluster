@@ -22,7 +22,7 @@ gem_package "net-ldap"
 gem_package "activeldap"
 
 template "/root/bin/banana-passwd.rb" do
-  ldap_server = search(:node, "role:banana_ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
+  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
   owner "root"
   group "root"
   mode "0755"
