@@ -24,6 +24,8 @@ Featuring:
 
   - QLogic QME7342 InfiniBand adapters with OFED 1.5.4.1
 
+  - slurm as a job scheduler / resource manager
+
   - LDAP for user account directory, yet converted from
     easy-to-maintain flat "passwd" file
 
