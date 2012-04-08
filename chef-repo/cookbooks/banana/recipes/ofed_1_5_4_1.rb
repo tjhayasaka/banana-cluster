@@ -128,6 +128,7 @@ end
 
 service "opensmd" do
   action :start
+  not_if "ps x | grep -v grep | grep /usr/sbin/opensm >/dev/null" # we patched the init script to sleep for a while unconditionally, so we want to avoid it
 end
 
 execute "/etc/rc.local.d/99_qib_portconfig"
