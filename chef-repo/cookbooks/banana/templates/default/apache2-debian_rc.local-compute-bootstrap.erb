@@ -25,6 +25,17 @@ echo "done." 1>&2
 chmod 700 /root/.ssh
 wget http://<%= @preseeder.banananet_ipaddress %>:1235/authorized_keys -O /root/.ssh/authorized_keys
 chmod 600 /root/.ssh/authorized_keys
+# share ssh host keys between all nodes for convenience.  this is the
+# easiest solution so that node reinstallation doesn't require
+# cleaning known_hosts, but of course this is really a huge security
+# hole.
+wget http://<%= @preseeder.banananet_ipaddress %>:1235/ssh_host_dsa_key -O /etc/ssh/ssh_host_dsa_key
+wget http://<%= @preseeder.banananet_ipaddress %>:1235/ssh_host_rsa_key -O /etc/ssh/ssh_host_rsa_key
+wget http://<%= @preseeder.banananet_ipaddress %>:1235/ssh_host_dsa_key.pub -O /etc/ssh/ssh_host_dsa_key.pub
+wget http://<%= @preseeder.banananet_ipaddress %>:1235/ssh_host_rsa_key.pub -O /etc/ssh/ssh_host_rsa_key.pub
+chown root:root /etc/ssh/ssh_host_?sa_key /etc/ssh/ssh_host_?sa_key.pub
+chmod 600 /etc/ssh/ssh_host_?sa_key
+chmod 644 /etc/ssh/ssh_host_?sa_key.pub
 
 cat <<EOF
 

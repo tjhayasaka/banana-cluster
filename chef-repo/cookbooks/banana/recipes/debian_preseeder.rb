@@ -44,4 +44,14 @@ file "/home/www-data/banana-debian-preseed/authorized_keys" do
   mode "0644"
 end
 
+%w(ssh_host_dsa_key  ssh_host_dsa_key.pub  ssh_host_rsa_key  ssh_host_rsa_key.pub).each do |f|
+  # SECURITY: BUG: FIXME:  making private key open to public
+  file "/home/www-data/banana-debian-preseed/#{f}" do
+    content File.read("/etc/ssh/#{f}")
+    owner "root"
+    group "root"
+    mode "0644"
+  end
+end
+
 apache_site "debian_preseed"
