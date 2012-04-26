@@ -1,4 +1,7 @@
-############################################################################### 
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
+###############################################################################
 #                 Sample configuration file for SLURM 2
 ###############################################################################
 #
@@ -172,3 +175,6 @@ SlurmdLogFile=/var/log/slurm-llnl/slurmd.log
 NodeName=<%= compute_node.hostname %> Sockets=<%= compute_node.cpu.real %> CoresPerSocket=<%= compute_node.cpu.total / compute_node.cpu.real %> State=UNKNOWN
 <% end %>
 PartitionName=compute Nodes=<%= @compute_nodes.map(&:hostname).join(",") %> Default=YES MaxTime=INFINITE State=UP
+
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.

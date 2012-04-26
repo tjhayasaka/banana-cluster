@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
 def hostname_to_hostnum(hostname)
   hostname.sub(/^.*host banana/, "").sub(/ .*$/, "").to_i
 end

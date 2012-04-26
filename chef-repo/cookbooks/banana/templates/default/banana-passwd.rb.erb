@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
 require "rubygems"
 require "active_ldap"
 
@@ -27,6 +30,8 @@ usage: #{$0} [--dry-run|-n] passwd-filename
 
 #{File.basename $0} updates the LDAP directory of banana cluster
 according to the passwd file specified by the command line argument.
+
+This script does following things:
 
   - create "Users" ou and "Groups" ou.
 

@@ -1,4 +1,5 @@
-#
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
 
 the recipe "munge" (which slurm depends on) requires the file
 "munge.key".

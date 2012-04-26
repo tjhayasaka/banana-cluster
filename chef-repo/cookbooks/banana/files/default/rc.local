@@ -11,6 +11,9 @@
 #
 # By default this script does nothing.
 
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
 setterm -blength 0 -powersave off -blank 0
 loadkeys emacs2
 
