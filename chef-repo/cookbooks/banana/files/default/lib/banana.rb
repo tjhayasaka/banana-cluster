@@ -13,9 +13,12 @@ module ::Banana
   class Host
     attr_accessor :name
     attr_accessor :ethernet_address
+    attr_accessor :chef_node
+
     def initialize(name, attributes = {})
       self.name = name
       self.ethernet_address = attributes[:ethernet_address]
+      self.chef_node = attributes[:chef_node]
     end
 
     def ip_address
@@ -62,6 +65,10 @@ module ::Banana
 
     def initialize
       @host_groups = []
+    end
+
+    def hosts
+      host_groups.map(&:hosts).flatten
     end
 
     def find_host_group_by_name(name)

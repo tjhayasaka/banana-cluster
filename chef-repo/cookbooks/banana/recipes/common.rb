@@ -8,15 +8,19 @@ cookbook_file "/root/lib/banana.rb" do
 end
 
 directory "/root/etc"
-cookbook_file "/root/etc/banana_config.rb" do
-  notifies :create, "ruby_block[reload_banana_config]", :immediately
-end
+cookbook_file "/root/etc/banana_config.rb"
 
 ruby_block "reload_banana_config" do
   block do
     load "/root/lib/banana.rb"
     Banana.clear_config
     load "/root/etc/banana_config.rb"
+    compute_nodes = search(:node, "recipes:banana\\:\\:compute AND chef_environment:#{node.chef_environment}")
+    compute_nodes.each do |node|
+      host = ::Banana.config.find_host_by_name(node.hostname)
+      raise "#{node.hostname}:  host not found in Banana.config" unless host
+      host.chef_node = node
+    end
   end
   action :create
 end

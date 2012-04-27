@@ -23,9 +23,7 @@ end
 
 template "/etc/slurm-llnl/slurm.conf" do
   control_machine = search(:node, "role:banana_head AND chef_environment:#{node.chef_environment}").first
-  compute_nodes = search(:node, "recipes:banana\\:\\:compute AND chef_environment:#{node.chef_environment}")
-  variables(:control_machine => control_machine,
-            :compute_nodes => compute_nodes)
+  variables(:control_machine => control_machine)
   mode "0644"
   notifies :restart, "service[slurm-llnl]"
 end

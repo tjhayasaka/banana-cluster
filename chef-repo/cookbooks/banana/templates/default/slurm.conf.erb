@@ -63,7 +63,7 @@ ProctrackType=proctrack/pgid
 #PropagateResourceLimits=
 PropagateResourceLimits=CORE
 #PropagateResourceLimitsExcept=
-ReturnToService=1
+ReturnToService=2
 #SallocDefaultCommand=
 SlurmctldPidFile=/var/run/slurm-llnl/slurmctld.pid
 SlurmctldPort=6817
@@ -171,10 +171,13 @@ SlurmdLogFile=/var/log/slurm-llnl/slurmd.log
 #
 #
 # COMPUTE NODES
-<% @compute_nodes.each do |compute_node| %>
-NodeName=<%= compute_node.hostname %> Sockets=<%= compute_node.cpu.real %> CoresPerSocket=<%= compute_node.cpu.total / compute_node.cpu.real %> State=UNKNOWN
+<% ::Banana.config.hosts.each do |host| %>
+<%   cpu = host.chef_node.cpu %>
+NodeName=<%= host.name %> Sockets=<%= cpu["real"] %> CoresPerSocket=<%= cpu["total"] / cpu["real"] %> State=UNKNOWN
 <% end %>
-PartitionName=compute Nodes=<%= @compute_nodes.map(&:hostname).join(",") %> Default=YES MaxTime=INFINITE State=UP
+<% ::Banana.config.host_groups.reject { |g| g.hosts.empty? }.each do |host_group| %>
+PartitionName=<%= host_group.name %> Nodes=<%= host_group.hosts.map(&:name).join(",") %> MaxTime=INFINITE State=UP
+<% end %>
 
 # WARNING:  this file is auto-generated.  changes will be discarded on
 # next chef-client run.
