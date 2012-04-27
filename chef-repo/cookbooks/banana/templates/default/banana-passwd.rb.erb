@@ -104,7 +104,7 @@ begin
 
   passwd = File.read(passwd_filename)
 
-  users_expected = passwd.lines.map do |line|
+  users_expected = passwd.lines.map { |line| line.sub(/#.*$/, "").strip }.reject(&:empty?).map do |line|
     keys = [:uid, :user_password, :uid_number, :gid_number, :gecos, :home_directory, :login_shell]
     values = line.strip.split(":")
     attrs = Hash[*(keys.zip(values).flatten)]
