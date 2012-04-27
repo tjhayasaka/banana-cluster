@@ -24,6 +24,11 @@ module ::Banana
                         "10.90.#{m[1]}.#{m[2].to_i}"
                       end
     end
+
+    def ip_address_prefix
+      @ip_address_prefix ||= ip_address.sub(/\.[^.]*$/, "")
+    end
+
   end
 
   class HostGroup
@@ -38,6 +43,18 @@ module ::Banana
     def find_host_by_name(name)
       hosts.select { |host| host.name == name }.first
     end
+
+    def find_host_by_ethernet_address(addr)
+      hosts.select { |host| host.ethernet_address == addr }.first
+    end
+
+    def ip_address_prefix
+      @ip_address_prefix ||= begin
+                               m = name.match(/^[a-z]*([0-9])$/)
+                               "10.90.#{m[1]}"
+                             end
+    end
+
   end
 
   class Config
@@ -53,6 +70,10 @@ module ::Banana
 
     def find_host_by_name(name)
       host_groups.map { |host_group| host_group.find_host_by_name(name) }.compact.first
+    end
+
+    def find_host_by_ethernet_address(addr)
+      host_groups.map { |host_group| host_group.find_host_by_ethernet_address(addr) }.compact.first
     end
   end
 end
