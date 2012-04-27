@@ -2,6 +2,25 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+directory "/root/lib"
+cookbook_file "/root/lib/banana.rb" do
+  source "lib/banana.rb"
+end
+
+directory "/root/etc"
+cookbook_file "/root/etc/banana_config.rb" do
+  notifies :create, "ruby_block[reload_banana_config]", :immediately
+end
+
+ruby_block "reload_banana_config" do
+  block do
+    load "/root/lib/banana.rb"
+    Banana.clear_config
+    load "/root/etc/banana_config.rb"
+  end
+  action :create
+end
+
 
 # time stamping stuff
 
@@ -199,3 +218,5 @@ end
 execute "mount_nfs" do
   command "mount -vat nfs"
 end
+
+package "etherwake"

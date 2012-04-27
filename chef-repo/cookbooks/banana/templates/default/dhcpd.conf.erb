@@ -28,10 +28,14 @@ subnet 10.90.0.0 netmask 255.255.0.0 {
     <% @tftp_servers.each do |tftp_server| %>
     next-server <%= tftp_server.banananet_ipaddress %>;
     <% end %>
+    <% ::Banana.config.host_groups.each do |host_group| %>
 
-    host banana002 { hardware ethernet 78:2b:cb:4c:39:59; fixed-address 10.90.0.2; }
-    host banana003 { hardware ethernet 78:2b:cb:4c:97:5b; fixed-address 10.90.0.3; }
+    # <%= host_group.name %>
+      <% host_group.hosts.each do |host| %>
+    host <%= host.name %> { hardware ethernet <%= host.ethernet_address %>; fixed-address <%= host.ip_address %>; }
+      <% end %>
+    <% end %>
 
-    # use /root/bin/dhcp-genconf.rb to generate host declarations.
+    # use /root/bin/dhcp-genconf.rb on banana001 to generate host declarations.
   }
 }
