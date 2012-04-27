@@ -21,6 +21,11 @@ ruby_block "reload_banana_config" do
   action :create
 end
 
+directory "/root/bin"
+cookbook_file "/root/bin/wakeup-all" do
+  mode 0755
+end
+
 
 # time stamping stuff
 

@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
+require "/root/lib/banana"
+require "/root/etc/banana_config"
+
+def usage_exit(stream, code)
+  stream.puts "usage: $0 [--all|host_or_group...]"
+  exit(code)
+end
+
+def etherwake(host)
+  system("etherwake", "-i", "eth1", host.ethernet_address)
+end
+
+begin
+  usage_exit($stdout, 0) if ARGV.empty?
+
+  num_calls = 0
+
+  while !ARGV.empty?
+    case ARGV.shift
+    when "--all"
+      ::Banana.config.host_groups.each { |g| g.hosts.each { |host| etherwake(host); num_calls += 1 } }
+    when /.*/
+      name = $~.to_s
+      g = ::Banana.config.find_host_group_by_name(name)
+      h = ::Banana.config.find_host_by_name(name)
+      raise "#{name}:  host or group unknown" unless g || h
+      g && g.hosts.each { |host| etherwake(host); num_calls += 1 }
+      h && begin etherwake(h); num_calls += 1 end
+    end
+  end
+
+  $stderr.puts "#{num_calls} calls isseued"
+end

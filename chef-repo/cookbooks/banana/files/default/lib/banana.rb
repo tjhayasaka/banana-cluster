@@ -29,16 +29,30 @@ module ::Banana
   class HostGroup
     attr_accessor :name
     attr_accessor :hosts
+
     def initialize(name)
       self.name = name
       self.hosts = []
+    end
+
+    def find_host_by_name(name)
+      hosts.select { |host| host.name == name }.first
     end
   end
 
   class Config
     attr_accessor :host_groups
+
     def initialize
       @host_groups = []
+    end
+
+    def find_host_group_by_name(name)
+      host_groups.select { |host| host.name == name }.first
+    end
+
+    def find_host_by_name(name)
+      host_groups.map { |host_group| host_group.find_host_by_name(name) }.compact.first
     end
   end
 end
