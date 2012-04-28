@@ -237,6 +237,7 @@ end
 
 execute "mount_nfs" do
   command "mount -vat nfs"
+  action :nothing
 end
 
 package "etherwake"
