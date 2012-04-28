@@ -61,6 +61,8 @@ EOS
         end
         $stderr.puts "@@@ wrote example configuration for #{hostname}"
 
+        host_group.hosts << ::Banana::Host.new("#{hostname}", :ethernet_address => "#{ethernet_address}")
+
         File.open("/tmp/next_unconfigured_hostnum-#{host_group.name}", "w") { |f| f.puts next_hostnum + 1}
         next_hostnum = find_next_unconfigured_hostnum(host_group)
       end
