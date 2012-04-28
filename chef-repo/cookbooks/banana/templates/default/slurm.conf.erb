@@ -172,8 +172,13 @@ SlurmdLogFile=/var/log/slurm-llnl/slurmd.log
 #
 # COMPUTE NODES
 <% ::Banana.config.hosts.each do |host| %>
-<%   cpu = host.chef_node.cpu %>
+<%   node = host.chef_node %>
+<%   unless node %>
+<%     $stderr.puts "@@@ host #{host.name}: chef_client was not executed yet, not adding it to slurm host list" %>
+<%   else %>
+<%     cpu = node.cpu %>
 NodeName=<%= host.name %> Sockets=<%= cpu["real"] %> CoresPerSocket=<%= cpu["total"] / cpu["real"] %> State=UNKNOWN
+<%   end %>
 <% end %>
 <% ::Banana.config.host_groups.reject { |g| g.hosts.empty? }.each do |host_group| %>
 PartitionName=<%= host_group.name %> Nodes=<%= host_group.hosts.map(&:name).join(",") %> MaxTime=INFINITE State=UP
