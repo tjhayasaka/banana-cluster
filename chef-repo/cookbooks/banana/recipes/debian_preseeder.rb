@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+package "apache2"
+
 cookbook_file "/etc/apache2/sites-available/debian_preseed" do
   source "apache2-debian_preseed.conf"
   # FIXME: reload apache2?
