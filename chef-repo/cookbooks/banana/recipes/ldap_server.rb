@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 execute "preseed_slapd" do
   command <<'EOS'
 debconf-set-selections <<EOF
@@ -22,7 +24,9 @@ gem_package "net-ldap"
 gem_package "activeldap"
 
 template "/root/bin/banana-passwd.rb" do
-  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
+  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first
+  raise "couldn't find ldap_server in expanded run_list.  consider using '$banana_dry_run = true' first." unless ldap_server
+  ldap_server = ldap_server.banananet_ipaddress
   owner "root"
   group "root"
   mode "0755"
@@ -39,4 +43,6 @@ end
 
 execute "sync_passwd" do
   command "env LC_ALL=en_US.UTF-8 /root/bin/banana-passwd.rb /root/etc/passwd 2>&1"
+end
+
 end

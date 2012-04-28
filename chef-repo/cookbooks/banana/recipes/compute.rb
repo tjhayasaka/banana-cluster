@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 cookbook_file "/etc/security/limits.d/no-ulimit.conf" do
   owner "root"
   group "root"
@@ -9,3 +11,5 @@ cookbook_file "/etc/security/limits.d/no-ulimit.conf" do
 end
 
 package "libboost-all-dev"
+
+end

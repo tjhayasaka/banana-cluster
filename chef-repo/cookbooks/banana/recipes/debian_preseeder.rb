@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 package "apache2"
 
 cookbook_file "/etc/apache2/sites-available/debian_preseed" do
@@ -23,6 +25,7 @@ end
 
 template "/home/www-data/banana-debian-preseed/preseed.txt" do
   preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  raise "couldn't find preseeder in expanded run_list.  consider using '$banana_dry_run = true' first." unless preseeder
   source "apache2-debian_preseed.txt.erb"
   owner "root"
   group "root"
@@ -32,6 +35,7 @@ end
 
 template "/home/www-data/banana-debian-preseed/rc.local-compute-bootstrap" do
   preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  raise "couldn't find preseeder in expanded run_list.  consider using '$banana_dry_run = true' first." unless preseeder
   source "apache2-debian_rc.local-compute-bootstrap.erb"
   owner "root"
   group "root"
@@ -57,3 +61,5 @@ end
 end
 
 apache_site "debian_preseed"
+
+end

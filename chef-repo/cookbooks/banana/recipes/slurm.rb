@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 %w(munge slurm-llnl slurm-llnl-basic-plugins).each do |name|
   package name
 end
@@ -40,4 +42,6 @@ ruby_block "/etc/default/slurm-llnl" do
     res.notifies :restart, "service[slurm-llnl]"
     res.run_action(:create)
   end
+end
+
 end

@@ -2,6 +2,12 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+# you may want to uncomment following line on first chef-client run to
+# update expanded run_list.
+# $banana_dry_run = true
+
+unless $banana_dry_run
+
 directory "/root/lib"
 cookbook_file "/root/lib/banana.rb" do
   source "lib/banana.rb"
@@ -13,9 +19,10 @@ cookbook_file "/root/etc/banana_config.rb"
 ruby_block "reload_banana_config" do
   block do
     load "/root/lib/banana.rb"
-    Banana.clear_config
+    ::Banana.clear_config
     load "/root/etc/banana_config.rb"
     compute_nodes = search(:node, "recipes:banana\\:\\:compute AND chef_environment:#{node.chef_environment}")
+    $stderr.puts "@@@ empty compute_nodes" if compute_nodes.empty?
     compute_nodes.each do |node|
       host = ::Banana.config.find_host_by_name(node.hostname)
       raise "#{node.hostname}:  host not found in Banana.config" unless host
@@ -24,6 +31,8 @@ ruby_block "reload_banana_config" do
   end
   action :create
 end
+
+###
 
 directory "/root/bin"
 cookbook_file "/root/bin/wakeup-all" do
@@ -188,7 +197,9 @@ for dirname in %w(/w0 /w1 /w2 /w3)
 end
 
 execute "preseed_config" do
-  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first.banananet_ipaddress
+  ldap_server = search(:node, "recipes:banana\\:\\:ldap_server AND chef_environment:#{node.chef_environment}").first
+  raise "couldn't find ldap_server in expanded run_list.  consider using '$banana_dry_run = true' first." unless ldap_server
+  ldap_server = ldap_server.banananet_ipaddress
   command <<EOS
 debconf-set-selections <<EOF
 nslcd nslcd/ldap-uris string ldap://#{ldap_server}/
@@ -229,3 +240,5 @@ execute "mount_nfs" do
 end
 
 package "etherwake"
+
+end

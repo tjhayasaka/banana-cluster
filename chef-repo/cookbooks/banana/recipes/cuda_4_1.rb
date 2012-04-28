@@ -11,6 +11,8 @@
 #     cudatoolkit_4.1.28_linux_64_ubuntu10.04.run
 #     gpucomputingsdk_4.1.28_linux.run
 
+unless $banana_dry_run
+
 package "linux-headers-" + `uname --kernel-release`.strip
 
 execute "install_driver" do
@@ -68,3 +70,5 @@ EOS
 end
 
 execute "/etc/rc.local.d/99_cuda"
+
+end

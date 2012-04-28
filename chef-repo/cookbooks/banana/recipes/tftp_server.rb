@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 package "atftpd"
 service "atftpd"
 
@@ -31,6 +33,7 @@ end
 ruby_block "/srv/tftp/debian-installer/amd64/boot-screens/txt.cfg" do
   block do
     preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
+    raise "couldn't find preseeder in expanded run_list.  consider using '$banana_dry_run = true' first." unless preseeder
     lines = File.readlines(name).reject { |s| s =~ /^.ipappend / || s =~ /^.append / }
     lines << "\tipappend 2\n"
     lines << "\tappend vga=788 initrd=debian-installer/amd64/initrd.gz auto=true priority=critical interface=eth1 url=http://#{preseeder.banananet_ipaddress}:1235/preseed.txt hostname=debian domain=localdomain.local -- quiet\n"
@@ -43,4 +46,6 @@ ruby_block "/srv/tftp/debian-installer/amd64/boot-screens/txt.cfg" do
     res.content lines.join
     res.run_action(:create)
   end
+end
+
 end

@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 package "isc-dhcp-server"
 service "isc-dhcp-server"
 
@@ -9,6 +11,9 @@ template "/etc/dhcp/dhcpd.conf" do
   routers = search(:node, "role:banana_router AND chef_environment:#{node.chef_environment}")
   tftp_servers = search(:node, "recipes:banana\\:\\:tftp_server AND chef_environment:#{node.chef_environment}")
   preseeder = search(:node, "recipes:banana\\:\\:debian_preseeder AND chef_environment:#{node.chef_environment}").first
+  raise "couldn't find routers in expanded run_list.  consider using '$banana_dry_run = true' first." if routers.empty?
+  raise "couldn't find tftp_servers in expanded run_list.  consider using '$banana_dry_run = true' first." if tftp_servers.empty?
+  raise "couldn't find preseeder in expanded run_list.  consider using '$banana_dry_run = true' first." unless preseeder
   owner "root"
   group "root"
   mode "0644"
@@ -40,4 +45,6 @@ cookbook_file "/root/bin/dhcp-genconf.rb" do
   owner "root"
   group "root"
   mode "0700"
+end
+
 end

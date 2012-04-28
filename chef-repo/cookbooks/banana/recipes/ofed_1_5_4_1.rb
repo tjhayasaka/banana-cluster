@@ -2,6 +2,8 @@
 # Copyright 2012, Tomoaki Hayasaka
 #
 
+unless $banana_dry_run
+
 package "linux-headers-" + `uname --kernel-release`.strip
 package "rpm"
 package "flex"
@@ -162,4 +164,6 @@ end
 
 execute "select_default_mpi_impl" do
   command "mpi-selector --system --yes --set openmpi_gcc-1.4.3"
+end
+
 end
