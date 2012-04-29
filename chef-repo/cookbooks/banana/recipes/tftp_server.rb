@@ -13,8 +13,26 @@ cookbook_file installer_archive
 
 execute "extract_installer" do
   depends installer_archive
-  stamps "installer-extracted"
+  stamps "debian-installer-extracted"
   command "tar Czxpf /srv/tftp #{installer_archive}"
+end
+
+cookbook_file "/srv/tftp/debian-installer/amd64/initrd.gz.banana-patch" do
+  source "private/initrd.gz.banana-patch"
+  # see private/initrd.gz.banana-patch-README about this file
+end
+
+execute "patch_initrd_to_add_nonfree_firmwares" do
+  depends "debian-installer-extracted"
+  stamps "debian-initrd-patched"
+  command <<'EOS'
+    cd /srv/tftp/debian-installer/amd64/ &&
+    [ -f initrd.gz.dist ] || mv -v initrd.gz initrd.gz.dist &&
+    rm -f initrd.gz.patched &&
+    cat initrd.gz.dist initrd.gz.banana-patch >initrd.gz.patched &&
+    chmod 644 initrd.gz.patched &&
+    cp -pv initrd.gz.patched initrd.gz
+EOS
 end
 
 ruby_block "/srv/tftp/debian-installer/amd64/boot-screens/syslinux.cfg" do
