@@ -35,9 +35,8 @@ end
 ###
 
 directory "/root/bin"
-cookbook_file "/root/bin/wakeup-all" do
-  mode 0755
-end
+cookbook_file "/root/bin/wakeup-all" do mode 0755 end
+cookbook_file "/root/bin/ssh-all" do mode 0755 end
 
 
 # time stamping stuff

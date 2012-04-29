@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+# WARNING:  this file is auto-generated.  changes will be discarded on
+# next chef-client run.
+
+require "/root/lib/banana"
+require "/root/etc/banana_config"
+
+def usage_exit(stream, code)
+  stream.puts "usage: $0 [--all|--group name]... command [args...]"
+  exit(code)
+end
+
+def ssh(host, *args)
+  system("ssh", host.ip_address, *args)
+end
+
+begin
+  usage_exit($stdout, 0) if ARGV.empty?
+
+  targets = []
+
+  while !ARGV.empty?
+    case ARGV.first
+    when "--all"
+      ARGV.shift
+      targets += ::Banana.config.host_groups.map { |g| g.hosts }.flatten
+    when "--group"
+      ARGV.shift
+      name = ARGV.shift
+      g = ::Banana.config.find_host_group_by_name(name)
+      raise "#{name}:  group unknown" unless g
+      targets += g.hosts
+    else
+      break
+    end
+  end
+
+  raise "command is not specified" if ARGV.empty?
+
+  num_calls = 0
+  targets.each do |host|
+    ssh(host, *ARGV)
+    num_calls += 1
+  end
+
+  $stderr.puts "#{num_calls} calls isseued"
+end
