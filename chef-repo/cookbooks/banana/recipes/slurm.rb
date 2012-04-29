@@ -32,8 +32,29 @@ end
 
 ruby_block "/etc/default/slurm-llnl" do
   block do
-    lines = File.readlines(name).reject { |s| s =~ /^ulimit / }
-    lines << "ulimit " + %w(c d e f i l m n p q r s t u v x).map { |c| "-#{c} unlimited" }.join(" ") + "\n" # FIXME:  unsafe
+    lines = File.readlines(name).reject { |s| s =~ /^# .*ulimit/ || s =~ /ulimit.*unlimited$/ || s =~ /EOF$/ }
+    lines += (<<'EOS').lines.map { |a| a }
+# abusing this "default" file to set ulimit defaults.
+# this file is run by dash and dash doesn't accept several ulimit options, so we use bash instead.
+bash -- <<EOF
+ulimit -c unlimited
+ulimit -d unlimited
+ulimit -e unlimited
+ulimit -f unlimited
+ulimit -i unlimited
+ulimit -l unlimited
+ulimit -m unlimited
+# ulimit -n unlimited
+# ulimit -p unlimited
+ulimit -q unlimited
+ulimit -r unlimited
+ulimit -s unlimited
+ulimit -t unlimited
+ulimit -u unlimited
+ulimit -v unlimited
+ulimit -x unlimited
+EOF
+EOS
     res = Chef::Resource::File.new(name, Chef::RunContext.new(node, {}))
     res.owner "root"
     res.group "root"
