@@ -218,12 +218,18 @@ package "nfs-client"
 
 ruby_block "/etc/fstab" do
   block do
-    lines = File.readlines(name).reject { |s| s =~ /^[^ ]* +\/(w0|w1|w2|w3) / }
+    lines = File.readlines(name).reject { |s| s =~ /^[^ ]* +\/(w[0-9]) / }
     lines += [<<EOS]
-10.8.91.1:/w0 /w0 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
-10.8.91.1:/w1 /w1 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
-10.8.91.1:/w2 /w2 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
-10.8.91.1:/w3 /w3 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w0 /w0 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w1 /w1 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w2 /w2 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w3 /w3 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w4 /w4 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.2:/w5 /w5 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.3:/w6 /w6 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.3:/w7 /w7 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.3:/w8 /w8 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
+10.90.0.3:/w9 /w9 nfs rsize=8192,wsize=8192,nfsvers=3 0 0
 EOS
     res = Chef::Resource::File.new(name, Chef::RunContext.new(node, {}))
     res.owner "root"
@@ -234,9 +240,12 @@ EOS
   end
 end
 
+
+10.times { |n| directory "/w#{n}" }
+
 execute "mount_nfs" do
   command "mount -vat nfs"
-  action :nothing
+  # action :nothing
 end
 
 package "etherwake"
