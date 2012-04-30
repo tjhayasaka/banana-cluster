@@ -83,6 +83,12 @@ EOS
 EOS
   end
 
+  execute "extract_precompiled_ofed_binary" do
+    precompiled = "/w2/hayasaka/files/banana/debian-6.0-precompiled-OFED-1.5.4.1-20120501-00.tar.bz2"
+    command "cd /root/stamps/ && tar jxpf #{precompiled}"
+    only_if { File.exist?(precompiled) }
+  end
+
   execute "install_ofed" do
     depends "OFED-1.5.4.1.tgz-patched-ofa_kernel"
     depends "OFED-1.5.4.1.tgz-patched-infinipath-psm"
