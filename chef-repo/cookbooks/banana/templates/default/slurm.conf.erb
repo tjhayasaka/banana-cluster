@@ -175,13 +175,19 @@ SlurmdLogFile=/var/log/slurm-llnl/slurmd.log
 <%   node = host.chef_node %>
 <%   unless node %>
 <%     $stderr.puts "@@@ host #{host.name}: chef_client was not executed yet, not adding it to slurm host list" %>
+# NodeName=<%= host.name %> # not configured yet.  run chef_client on this host to proceed.
 <%   else %>
 <%     cpu = node.cpu %>
 NodeName=<%= host.name %> Sockets=<%= cpu["real"] %> CoresPerSocket=<%= cpu["total"] / cpu["real"] %> State=UNKNOWN
 <%   end %>
 <% end %>
 <% ::Banana.config.host_groups.reject { |g| g.hosts.empty? }.each do |host_group| %>
-PartitionName=<%= host_group.name %> Nodes=<%= host_group.hosts.map(&:name).join(",") %> MaxTime=INFINITE State=UP
+<%   hostnames = host_group.hosts.select { |h| h.chef_node }.map(&:name) %>
+<%   if hostnames.empty? %>
+# PartitionName=<%= host_group.name %> # this host group is empty
+<%   else %>
+PartitionName=<%= host_group.name %> Nodes=<%= hostnames.join(",") %> MaxTime=INFINITE State=UP
+<%   end %>
 <% end %>
 
 # WARNING:  this file is auto-generated.  changes will be discarded on
