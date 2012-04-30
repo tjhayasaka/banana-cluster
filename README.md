@@ -1,10 +1,10 @@
-banana-cluster - configuration scripts for banana HPC cluster
+banana-cluster - configuration scripts for Rice HPC cluster
 
-Banana is a HPC cluster being constructed at PFSL, Tohoku University.
-Here we provide the configuration scripts of banana.
+Rice is a HPC cluster being constructed at PFSL, Tohoku University.
+Here we provide the configuration scripts of rice.
 
 **DISCLAIMER:  NEVER EXPECT IT TO WORK FOR YOU AS IS**.  Adaptation is
-mandatory because this software depends on many banana specific
+mandatory because this software depends on many rice specific
 details such as IP addresses, user names and NFS shares, and they are
 provided as is.
 
