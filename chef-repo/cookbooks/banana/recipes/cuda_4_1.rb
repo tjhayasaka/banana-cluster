@@ -55,6 +55,17 @@ execute "compile_sdk" do
   command "cd /usr/NVIDIA_GPU_Computing_SDK && make clean && make -j6 all"
 end
 
+execute "cuda_4_1_symlink_libs" do
+  depends "compile_sdk"
+  stamps "cuda_4_1_symlink_libs"
+  command <<EOS
+cd /usr/NVIDIA_GPU_Computing_SDK/C/lib &&
+ln -s libcutil_x86_64.a libcutil.a &&
+ln -s libparamgl_x86_64.a libparamgl.a &&
+ln -s librendercheckgl_x86_64.a librendercheckgl.a
+EOS
+end
+
 file "/etc/rc.local.d/99_cuda" do
   owner "root"
   group "root"
