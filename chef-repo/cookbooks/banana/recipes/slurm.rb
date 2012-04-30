@@ -35,25 +35,22 @@ ruby_block "/etc/default/slurm-llnl" do
     lines = File.readlines(name).reject { |s| s =~ /^# .*ulimit/ || s =~ /ulimit.*unlimited$/ || s =~ /EOF$/ }
     lines += (<<'EOS').lines.map { |a| a }
 # abusing this "default" file to set ulimit defaults.
-# this file is run by dash and dash doesn't accept several ulimit options, so we use bash instead.
-bash -- <<EOF
 ulimit -c unlimited
 ulimit -d unlimited
-ulimit -e unlimited
+#ulimit -e unlimited
 ulimit -f unlimited
-ulimit -i unlimited
+#ulimit -i unlimited
 ulimit -l unlimited
 ulimit -m unlimited
 # ulimit -n unlimited
 # ulimit -p unlimited
-ulimit -q unlimited
-ulimit -r unlimited
+#ulimit -q unlimited
+#ulimit -r unlimited
 ulimit -s unlimited
 ulimit -t unlimited
-ulimit -u unlimited
+#ulimit -u unlimited
 ulimit -v unlimited
-ulimit -x unlimited
-EOF
+#ulimit -x unlimited
 EOS
     res = Chef::Resource::File.new(name, Chef::RunContext.new(node, {}))
     res.owner "root"
