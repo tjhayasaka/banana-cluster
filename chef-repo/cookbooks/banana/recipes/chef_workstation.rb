@@ -11,6 +11,8 @@ unless $banana_dry_run
       threads = []
       ::Banana.config.hosts.select { |host| host.chef_node.nil? }.each do |host|
         # boostrap_file = ::File.expand_path("../../../../bootstrap/debian-6.0-rvm-gem",  __FILE__) # won't work because it points to chef cache
+        precompiled_ruby = "/w2/hayasaka/files/banana/debian-6.0-rvm-ruby-1.9.2-p180-20120501-00.tar.bz2"
+        system("scp", "-p", precompiled_ruby, "#{host.name}:/tmp/debian-6.0-rvm-precompiled-ruby-1.9.2-p180.tar.bz2") if File.exist?(precompiled_ruby)
         boostrap_file = "/root/banana-chef/chef-repo/bootstrap/debian-6.0-rvm-gem" # FIXME:
         command_line = ["knife", "bootstrap", "#{host.name}.pfsl.mech.tohoku.ac.jp", "--template-file", boostrap_file]
         puts "running #{command_line}"
