@@ -44,8 +44,7 @@ Completed base installation.
 
 Now you can bootstrap this node from your chef workstation:
 
- knife bootstrap `hostname -f` --template-file \\
-                \`pwd\`/bootstrap/debian-6.0-rvm-gem
+ touch /tmp/do-bootstrap && chef-client  # bootstraps all unconfigured nodes
 
 If a client already exists with a same name, error will be raised on bootstrap:
 
