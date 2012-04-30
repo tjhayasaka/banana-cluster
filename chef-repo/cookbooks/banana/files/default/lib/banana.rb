@@ -14,11 +14,17 @@ module ::Banana
     attr_accessor :name
     attr_accessor :ethernet_address
     attr_accessor :chef_node
+    attr_writer :host_group
 
     def initialize(name, attributes = {})
       self.name = name
       self.ethernet_address = attributes[:ethernet_address]
       self.chef_node = attributes[:chef_node]
+    end
+
+    def host_group
+      ::Banana.config.update_host_groups_of_hosts unless @host_group
+      @host_group
     end
 
     def ip_address
@@ -43,6 +49,10 @@ module ::Banana
       self.hosts = []
     end
 
+    def update_host_groups_of_hosts
+      hosts.each { |host| host.host_group = self }
+    end
+
     def find_host_by_name(name)
       hosts.select { |host| host.name == name }.first
     end
@@ -65,6 +75,10 @@ module ::Banana
 
     def initialize
       @host_groups = []
+    end
+
+    def update_host_groups_of_hosts
+      host_groups.each { |host_group| host_group.update_host_groups_of_hosts }
     end
 
     def hosts
