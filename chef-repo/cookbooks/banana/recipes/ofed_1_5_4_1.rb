@@ -120,7 +120,11 @@ file "/etc/rc.local.d/99_qib_portconfig" do
   mode "0755"
   content <<EOS
 #!/bin/sh
-exec /usr/sbin/iba_portconfig -s 4
+/usr/sbin/iba_portconfig -s 4
+# reset drivers as a workaround for issue #282 (port won't be up after boot)
+/etc/init.d/opensmd stop
+/etc/init.d/openibd restart
+/etc/init.d/opensmd start
 EOS
 end
 
