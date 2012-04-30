@@ -4,6 +4,6 @@
 
 unless $banana_dry_run
 
-package "isc-dhcp-client"
+  package "isc-dhcp-client"
 
 end
