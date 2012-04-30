@@ -137,7 +137,8 @@ service "opensmd" do
   not_if "ps x | grep -v grep | grep /usr/sbin/opensm >/dev/null" # we patched the init script to sleep for a while unconditionally, so we want to avoid it
 end
 
-execute "/etc/rc.local.d/99_qib_portconfig"
+# do not execute this script on chef-client run because it affects running computations.
+# execute "/etc/rc.local.d/99_qib_portconfig"
 
 directory "/var/mpi-selector" do
   owner "root"
