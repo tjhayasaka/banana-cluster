@@ -12,7 +12,8 @@ def usage_exit(stream, code)
 end
 
 def ssh(host, *args)
-  system("ssh", host.ip_address, *args)
+  ssh_options = ["-o", "StrictHostKeyChecking no"]
+  system("ssh", *ssh_options, host.ip_address, *args)
 end
 
 begin
