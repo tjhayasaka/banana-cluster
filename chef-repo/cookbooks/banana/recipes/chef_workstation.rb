@@ -23,14 +23,20 @@ unless $banana_dry_run
     action :create
   end
 
-  ruby_block "add_compute_nodes" do
+  ruby_block "add_compute_node_roles" do
     block do
-      ::Banana.config.host_groups.each do |host_group|
-        host_group.hosts.reject { |host| host.chef_node.nil? }.each do |host|
-          true
-#          $stdout.puts "knife node run_list add #{host.chef_node.fqdn} role[banana_compute_hostgroup_#{host_group.name}]"
+      threads = []
+      nodes = search(:node, "chef_environment:#{node.chef_environment}")
+      nodes.map { |node| host = ::Banana.config.find_host_by_name(node.hostname); host && (host.chef_node ||= node) && host }.compact.each do |host|
+        if host.chef_node.run_list.empty?
+          command_line = ["knife", "node", "run_list", "add", host.chef_node.fqdn, "role[banana_compute_hostgroup_#{host.host_group.name}]"]
+          puts "running #{command_line}"
+          threads << Thread.new do
+            system(*command_line)
+          end
         end
       end
+      threads.each { |th| th.join }
     end
     action :create
   end
