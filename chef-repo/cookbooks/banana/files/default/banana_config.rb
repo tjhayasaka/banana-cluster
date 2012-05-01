@@ -9,6 +9,21 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine1004", :ethernet
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("vine2")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2001", :ethernet_address => "00:26:b9:46:ed:a4")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2002", :ethernet_address => "00:26:b9:3d:c8:aa")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2003", :ethernet_address => "00:26:b9:45:3e:b7")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2004", :ethernet_address => "00:26:b9:45:4b:47")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2005", :ethernet_address => "00:26:b9:3d:c4:02")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2006", :ethernet_address => "00:26:b9:46:fe:4e")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2007", :ethernet_address => "00:26:b9:3d:c8:8f")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2008", :ethernet_address => "00:26:b9:45:e9:5b")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2009", :ethernet_address => "00:26:b9:45:a9:2d")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2010", :ethernet_address => "00:26:b9:45:53:b0")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2011", :ethernet_address => "00:26:b9:47:2e:02")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2012", :ethernet_address => "00:26:b9:45:cf:c3")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2013", :ethernet_address => "00:26:b9:44:6e:88")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2014", :ethernet_address => "00:26:b9:45:3f:62")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2015", :ethernet_address => "00:26:b9:45:cb:4c")
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice3")
@@ -40,6 +55,9 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4021", :ethernet
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4022", :ethernet_address => "78:2b:cb:4a:a1:bd")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4023", :ethernet_address => "d4:ae:52:71:96:a4")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4024", :ethernet_address => "d4:ae:52:71:a1:cb")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4025", :ethernet_address => "78:2b:cb:4c:41:be")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4026", :ethernet_address => "78:2b:cb:4c:37:d4")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4027", :ethernet_address => "78:2b:cb:4c:81:3f")
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice5")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice5001", :ethernet_address => "d4:ae:52:71:96:aa")
