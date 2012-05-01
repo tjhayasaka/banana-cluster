@@ -250,4 +250,6 @@ EOS
 
   package "etherwake"
 
+  package "zsh"
+
 end
