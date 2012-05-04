@@ -8,7 +8,14 @@ unless $banana_dry_run
   package "rpm"
   package "flex"
   package "byacc"
-  package "tk8.5-dev"
+  package "libsysfs-dev"
+  # old ofed recipe installed tcl/tk-8.5 but they are not well tested with ofed-1.5.4.1,
+  # so ensure them pureged.
+  package "tk8.5-dev" do action :purge end
+  package "tcl8.5-dev" do action :purge end
+  package "tk8.5" do action :purge end
+  package "tcl8.5" do action :purge end
+  package "tk8.4-dev"
 
   cookbook_file "/root/stamps/OFED-1.5.4.1.tgz"
   cookbook_file "/root/stamps/OFED-1.5.4.1-patch-ofa_kernel"
@@ -84,7 +91,7 @@ EOS
   end
 
   execute "extract_precompiled_ofed_binary" do
-    precompiled = "/w2/hayasaka/files/banana/debian-6.0-precompiled-OFED-1.5.4.1-20120501-00.tar.bz2"
+    precompiled = "/w2/hayasaka/files/banana/debian-6.0-precompiled-OFED-1.5.4.1-20120504-00.tar.bz2"
     command "cd /root/stamps/ && tar jxpf #{precompiled}"
     only_if { File.exist?(precompiled) }
   end
