@@ -24,6 +24,7 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2012", :ethernet
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2013", :ethernet_address => "00:26:b9:44:6e:88")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2014", :ethernet_address => "00:26:b9:45:3f:62")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2015", :ethernet_address => "00:26:b9:45:cb:4c")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2018", :ethernet_address => "00:26:b9:3d:c8:ae")
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice3")
