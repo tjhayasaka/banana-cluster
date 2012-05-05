@@ -12,6 +12,7 @@ unless $banana_dry_run
 
 #  package "libboost-all-dev"
   package "libboost-thread-dev"
+  package "libboost-iostreams-dev"
 
   package "imagemagick"
 
