@@ -114,8 +114,10 @@ EOS
 
   execute "extract_precompiled_ofed_binary" do
     precompiled = "/w2/hayasaka/files/banana/debian-6.0-precompiled-QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43-20120505-00.tar.bz2"
+    not_if { !File.exist?(precompiled) } # NOTE:  order matters.  "not_if" comes first.
+    depends "QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43-extracted"
+    stamps "QLogicIB-Basic.RHEL5-x86_64.7.0.1.0.43-extracted-precompiled-binary"
     command "cd /root/stamps/ && tar jxpf #{precompiled}"
-    only_if { File.exist?(precompiled) }
   end
 
   execute "install_ofed" do
@@ -132,6 +134,7 @@ EOS
     owner "root"
     group "root"
     mode "0644"
+    content "Default=0x7fff : ALL=full ;\n"
   end
 
   file "/etc/default/opensm" do
@@ -140,6 +143,8 @@ EOS
     mode "0644"
     content <<EOS
 #
+
+PORTS=ALL
 
 sleep 5 # to wait ib if up
 EOS

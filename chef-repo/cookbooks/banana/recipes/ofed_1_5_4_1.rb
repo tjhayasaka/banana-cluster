@@ -92,8 +92,10 @@ EOS
 
   execute "extract_precompiled_ofed_binary" do
     precompiled = "/w2/hayasaka/files/banana/debian-6.0-precompiled-OFED-1.5.4.1-20120504-00.tar.bz2"
+    not_if { !File.exist?(precompiled) } # NOTE:  order matters.  "not_if" comes first.
+    depends "OFED-1.5.4.1.tgz-extracted"
+    stamps "OFED-1.5.4.1.tgz-extracted-precompiled-binary"
     command "cd /root/stamps/ && tar jxpf #{precompiled}"
-    only_if { File.exist?(precompiled) }
   end
 
   execute "install_ofed" do
@@ -108,6 +110,7 @@ EOS
     owner "root"
     group "root"
     mode "0644"
+    content "Default=0x7fff : ALL=full ;\n"
   end
 
   execute "install_iba_portconfig" do
@@ -122,6 +125,8 @@ EOS
     mode "0644"
     content <<EOS
 #
+
+PORTS=ALL
 
 sleep 5 # to wait ib if up
 EOS
