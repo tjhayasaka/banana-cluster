@@ -59,7 +59,7 @@ begin
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("#{hostname}", :ethernet_address => "#{ethernet_address}")
 EOS
         end
-        $stderr.puts "@@@ wrote example configuration for #{hostname}"
+        $stderr.puts "@@@ wrote example configuration for #{hostname}: #{ethernet_address}"
 
         host_group.hosts << ::Banana::Host.new("#{hostname}", :ethernet_address => "#{ethernet_address}")
 
