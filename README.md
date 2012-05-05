@@ -20,10 +20,9 @@ Featuring:
   - Debian GNU Linux 6.0 (squeeze) at the base, both for master and
     compute nodes
 
-  - Nvidia GPU with CUDA 4.1
+  - Nvidia GPUs (GeForce GTX 580 and Tesla C2070) with CUDA 4.1
 
-  - QLogic QME7342 InfiniBand adapters with OFED 1.5.4.1 (not yet
-    working with switches, direct connections only now)
+  - QLogic QME7342 InfiniBand adapters with OFED 1.5.4.1
 
   - slurm as a job scheduler / resource manager
 
