@@ -187,6 +187,21 @@ unless $banana_dry_run
     mode "0755"
   end
 
+  package "openssh-client"
+
+  ruby_block "/etc/ssh/ssh_config" do
+    block do
+      lines = File.readlines(name).reject { |s| s =~ /^\s*StrictHostKeyChecking/ }
+      lines << "    StrictHostKeyChecking no\n"
+      res = Chef::Resource::File.new(name, Chef::RunContext.new(node, {}))
+      res.owner "root"
+      res.group "root"
+      res.mode "0644"
+      res.content lines.join
+      res.run_action(:create)
+    end
+  end
+
   for dirname in %w(/w0 /w1 /w2 /w3)
     directory "#{dirname}" do
       owner "root"
