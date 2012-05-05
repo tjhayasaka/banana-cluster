@@ -38,6 +38,7 @@ Note that following third party components are licensed separately:
 
   - chef-repo/cookbooks/apache2/
   - chef-repo/cookbooks/banana/files/default/OFED-1.5.4.1.tgz
+  - chef-repo/cookbooks/banana/files/default/lis-1.2.62.tar.gz
 
 For banana part:
 
