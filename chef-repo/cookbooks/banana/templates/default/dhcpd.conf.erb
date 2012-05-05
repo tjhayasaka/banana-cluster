@@ -23,6 +23,10 @@ subnet 10.90.0.0 netmask 255.255.0.0 {
   option routers <%= @routers.map(&:banananet_ipaddress).join(", ") %>;
 
   group {
+    host cisco { hardware ethernet 00:0b:be:c4:d6:80; fixed-address 10.90.92.252; }
+  }
+
+  group {
     filename "pxelinux.0";
     server-name "<%= node.banananet_ipaddress %>";
     <% @tftp_servers.each do |tftp_server| %>
