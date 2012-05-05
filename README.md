@@ -10,7 +10,7 @@ provided as is.
 
 Featuring:
 
-  - ~5 users, ~40 nodes
+  - ~20 users, ~60 nodes
 
   - chef, for centralized configuration management with git version
     control
@@ -22,7 +22,8 @@ Featuring:
 
   - Nvidia GPU with CUDA 4.1
 
-  - QLogic QME7342 InfiniBand adapters with OFED 1.5.4.1
+  - QLogic QME7342 InfiniBand adapters with OFED 1.5.4.1 (not yet
+    working with switches, direct connections only now)
 
   - slurm as a job scheduler / resource manager
 
