@@ -24,18 +24,22 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2012", :ethernet
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2013", :ethernet_address => "00:26:b9:44:6e:88")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2014", :ethernet_address => "00:26:b9:45:3f:62")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2015", :ethernet_address => "00:26:b9:45:cb:4c")
-Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2018", :ethernet_address => "00:26:b9:3d:c8:ae")
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice3")
 
 
+Banana.config.host_groups << ::Banana::HostGroup.new("test4")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4003", :ethernet_address => "78:2b:cb:4a:ba:5a")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4004", :ethernet_address => "78:2b:cb:45:ba:fd")
+Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4005", :ethernet_address => "78:2b:cb:4c:38:b6")
+
 Banana.config.host_groups << ::Banana::HostGroup.new("rice4")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4001", :ethernet_address => "78:2b:cb:4c:3e:08")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4002", :ethernet_address => "78:2b:cb:45:d0:aa")
-Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4003", :ethernet_address => "78:2b:cb:4a:ba:5a")
-Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4004", :ethernet_address => "78:2b:cb:45:ba:fd")
-Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4005", :ethernet_address => "78:2b:cb:4c:38:b6")
+# temporarily in test4 # Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4003", :ethernet_address => "78:2b:cb:4a:ba:5a")
+# temporarily in test4 # Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4004", :ethernet_address => "78:2b:cb:45:ba:fd")
+# temporarily in test4 # Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4005", :ethernet_address => "78:2b:cb:4c:38:b6")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4006", :ethernet_address => "78:2b:cb:4c:81:37")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4007", :ethernet_address => "78:2b:cb:4e:0c:18")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4008", :ethernet_address => "78:2b:cb:48:7d:56")
