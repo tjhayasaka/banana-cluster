@@ -252,4 +252,21 @@ EOS
 
   package "zsh"
 
+  execute "save_original_uname" do
+    only_if "file /bin/uname | grep ELF"
+    command "mv -v /bin/uname /bin/uname.real"
+  end
+
+  file "/bin/uname" do
+    owner "root"
+    group "root"
+    mode "0755"
+    content <<'EOS'
+#!/bin/sh
+# this script mimics RHEL's uname which "uname -p" returns x86_64.
+args=$(echo " $@" | sed -e 's/-p/-m/') # NOTE: don't remove the whitespace before $@
+exec /bin/uname.real $args
+EOS
+  end
+
 end
