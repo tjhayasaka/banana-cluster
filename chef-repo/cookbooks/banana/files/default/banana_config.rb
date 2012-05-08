@@ -2,6 +2,7 @@
 # next chef-client run.
 
 Banana.config.host_groups << ::Banana::HostGroup.new("vine1")
+Banana.config.host_groups.last.slurm_options = { "Shared" => "NO" }
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine1001", :ethernet_address => "00:22:19:bc:a4:56")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine1002", :ethernet_address => "00:22:19:bc:ac:0e")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine1003", :ethernet_address => "00:22:19:bc:a4:15")
@@ -9,6 +10,7 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine1004", :ethernet
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("vine2")
+Banana.config.host_groups.last.slurm_options = { "Shared" => "NO" }
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2001", :ethernet_address => "00:26:b9:46:ed:a4")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2002", :ethernet_address => "00:26:b9:3d:c8:aa")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2003", :ethernet_address => "00:26:b9:45:3e:b7")
@@ -27,14 +29,11 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("vine2015", :ethernet
 
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice3")
+Banana.config.host_groups.last.slurm_options = { "Shared" => "EXCLUSIVE" }
 
-
-#Banana.config.host_groups << ::Banana::HostGroup.new("test4")
-#Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4003", :ethernet_address => "78:2b:cb:4a:ba:5a")
-#Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4004", :ethernet_address => "78:2b:cb:45:ba:fd")
-#Banana.config.host_groups.last.hosts << ::Banana::Host.new("test4005", :ethernet_address => "78:2b:cb:4c:38:b6")
 
 Banana.config.host_groups << ::Banana::HostGroup.new("rice4")
+Banana.config.host_groups.last.slurm_options = { "Shared" => "EXCLUSIVE" }
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4001", :ethernet_address => "78:2b:cb:4c:3e:08")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4002", :ethernet_address => "78:2b:cb:45:d0:aa")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4003", :ethernet_address => "78:2b:cb:4a:ba:5a")
@@ -65,7 +64,16 @@ Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4026", :ethernet
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4027", :ethernet_address => "78:2b:cb:4c:81:3f")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4028", :ethernet_address => "78:2b:cb:4a:b9:b5")
 
+#Banana.config.host_groups << ::Banana::HostGroup.new("test4")
+#Banana.config.host_groups.last.slurm_options = { "Shared" => "NO" }
+#Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4025", :ethernet_address => "78:2b:cb:4c:41:be")
+#Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4026", :ethernet_address => "78:2b:cb:4c:37:d4")
+#Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4027", :ethernet_address => "78:2b:cb:4c:81:3f")
+#Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice4028", :ethernet_address => "78:2b:cb:4a:b9:b5")
+
+
 Banana.config.host_groups << ::Banana::HostGroup.new("rice5")
+Banana.config.host_groups.last.slurm_options = { "Shared" => "EXCLUSIVE" }
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice5001", :ethernet_address => "d4:ae:52:71:96:aa")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice5002", :ethernet_address => "78:2b:cb:4e:0a:f5")
 Banana.config.host_groups.last.hosts << ::Banana::Host.new("rice5003", :ethernet_address => "78:2b:cb:4b:34:bc")

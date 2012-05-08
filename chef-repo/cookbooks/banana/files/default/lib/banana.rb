@@ -43,10 +43,12 @@ module ::Banana
   class HostGroup
     attr_accessor :name
     attr_accessor :hosts
+    attr_accessor :slurm_options
 
     def initialize(name)
       self.name = name
       self.hosts = []
+      self.slurm_options = {}
     end
 
     def update_host_groups_of_hosts
@@ -66,6 +68,18 @@ module ::Banana
                                m = name.match(/^[a-z]*([0-9])$/)
                                "10.90.#{m[1]}"
                              end
+    end
+
+    def default_slurm_options
+      { "MaxTime" => "INFINITE", "State" => "UP", "Shared" => "NO" }
+    end
+
+    def compiled_slurm_options
+      default_slurm_options.merge(slurm_options).reject { |key, value| value.nil? }
+    end
+
+    def compiled_slurm_options_string
+      compiled_slurm_options.map { |key, value| "#{key}=#{value}" }.join(" ")
     end
 
   end
